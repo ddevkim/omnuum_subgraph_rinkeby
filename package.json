@@ -2,7 +2,7 @@
   "name": "om_wallet",
   "license": "UNLICENSED",
   "scripts": {
-    "codegen": "graph codegen",
+    "codegen": "graph codegen --output-dir src/types/",
     "build": "graph build",
     "deploy": "graph deploy --node https://api.studio.thegraph.com/deploy/ om_wallet",
     "create-local": "graph create --node http://localhost:8020/ om_wallet",

@@ -1,6 +1,43 @@
-type ExampleEntity @entity {
+type Request @entity {
   id: ID!
-  count: BigInt!
-  reqId: BigInt! # uint256
-  owner: Bytes! # address
+  requestId: BigInt!
+  requester: Bytes!
+  value: BigInt!
+  withdrawn: Boolean!
+  transaction: Transaction!
+}
+
+type Approval @entity {
+  id: ID!
+  requestId: BigInt!
+  request: Request!
+  approver: Bytes!
+  transaction: Transaction!
+}
+
+type Revoke @entity {
+  id: ID!
+  requestId: BigInt! #pointer to Request
+  request: Request!
+  approver: Bytes!
+  transaction: Transaction!
+}
+
+type withdrawal @entity {
+  id: ID!
+  requestId: BigInt!
+  request: Request!
+  destination: Bytes!
+  withdrawalValue: BigInt!
+  transaction: Transaction!
+}
+
+type Transaction @entity {
+  # transaction hash
+  id: ID!
+  blockNumber: BigInt!
+  timestamp: BigInt!
+  gasUsed: BigInt!
+  gasPrice: BigInt!
+  requests: [Request!]! @derivedFrom(field: "transaction")
 }
