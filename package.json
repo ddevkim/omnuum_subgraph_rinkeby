@@ -1,6 +1,8 @@
 {
   "name": "om_wallet",
-  "license": "UNLICENSED",
+  "version": "1.0.0",
+  "license": "GPL-3.0-or-later",
+  "repository": "https://github.com/graphprotocol/om_wallet",
   "scripts": {
     "codegen": "graph codegen --output-dir src/types/",
     "build": "graph build",
@@ -12,5 +14,13 @@
   "dependencies": {
     "@graphprotocol/graph-cli": "0.28.0",
     "@graphprotocol/graph-ts": "0.26.0"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.15.0",
+    "@typescript-eslint/parser": "^5.15.0",
+    "eslint": "^8.11.0",
+    "eslint-config-prettier": "^8.5.0",
+    "prettier": "^2.5.1",
+    "typescript": "^4.6.2"
   }
 }
