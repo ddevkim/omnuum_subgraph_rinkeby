@@ -1,0 +1,16 @@
+{
+  "name": "om_wallet",
+  "license": "UNLICENSED",
+  "scripts": {
+    "codegen": "graph codegen",
+    "build": "graph build",
+    "deploy": "graph deploy --node https://api.studio.thegraph.com/deploy/ om_wallet",
+    "create-local": "graph create --node http://localhost:8020/ om_wallet",
+    "remove-local": "graph remove --node http://localhost:8020/ om_wallet",
+    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 om_wallet"
+  },
+  "dependencies": {
+    "@graphprotocol/graph-cli": "0.28.0",
+    "@graphprotocol/graph-ts": "0.26.0"
+  }
+}

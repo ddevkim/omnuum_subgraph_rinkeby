@@ -1,0 +1,35 @@
+specVersion: 0.0.1
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum
+    name: OmnuumWallet
+    network: rinkeby
+    source:
+      address: "0xcF7b254EB3E0F179662959e3522AB8219F590950"
+      abi: OmnuumWallet
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Approved
+        - FeeReceived
+        - Requested
+        - Revoked
+        - Withdrawn
+      abis:
+        - name: OmnuumWallet
+          file: ./abis/OmnuumWallet.json
+      eventHandlers:
+        - event: Approved(indexed uint256,indexed address)
+          handler: handleApproved
+        - event: FeeReceived(indexed address,indexed address,uint256)
+          handler: handleFeeReceived
+        - event: Requested(indexed uint256,indexed address,uint256)
+          handler: handleRequested
+        - event: Revoked(indexed uint256,indexed address)
+          handler: handleRevoked
+        - event: Withdrawn(indexed uint256,indexed address,uint256)
+          handler: handleWithdrawn
+      file: ./src/mapping.ts
