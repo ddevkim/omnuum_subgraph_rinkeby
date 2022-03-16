@@ -11,30 +11,31 @@ import {
   BigDecimal
 } from "@graphprotocol/graph-ts";
 
-export class ExampleEntity extends Entity {
+export class Request extends Entity {
   constructor(id: string) {
     super();
     this.set("id", Value.fromString(id));
 
-    this.set("count", Value.fromBigInt(BigInt.zero()));
-    this.set("reqId", Value.fromBigInt(BigInt.zero()));
-    this.set("owner", Value.fromBytes(Bytes.empty()));
+    this.set("request_value", Value.fromBigInt(BigInt.zero()));
+    this.set("withdrawal_value", Value.fromBigInt(BigInt.zero()));
+    this.set("approval_count", Value.fromBigInt(BigInt.zero()));
+    this.set("request_transaction", Value.fromString(""));
   }
 
   save(): void {
     let id = this.get("id");
-    assert(id != null, "Cannot save ExampleEntity entity without an ID");
+    assert(id != null, "Cannot save Request entity without an ID");
     if (id) {
       assert(
         id.kind == ValueKind.STRING,
-        `Entities of type ExampleEntity must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+        `Entities of type Request must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
       );
-      store.set("ExampleEntity", id.toString(), this);
+      store.set("Request", id.toString(), this);
     }
   }
 
-  static load(id: string): ExampleEntity | null {
-    return changetype<ExampleEntity | null>(store.get("ExampleEntity", id));
+  static load(id: string): Request | null {
+    return changetype<Request | null>(store.get("Request", id));
   }
 
   get id(): string {
@@ -46,30 +47,386 @@ export class ExampleEntity extends Entity {
     this.set("id", Value.fromString(value));
   }
 
-  get count(): BigInt {
-    let value = this.get("count");
+  get requester(): Bytes | null {
+    let value = this.get("requester");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set requester(value: Bytes | null) {
+    if (!value) {
+      this.unset("requester");
+    } else {
+      this.set("requester", Value.fromBytes(<Bytes>value));
+    }
+  }
+
+  get request_value(): BigInt {
+    let value = this.get("request_value");
     return value!.toBigInt();
   }
 
-  set count(value: BigInt) {
-    this.set("count", Value.fromBigInt(value));
+  set request_value(value: BigInt) {
+    this.set("request_value", Value.fromBigInt(value));
   }
 
-  get reqId(): BigInt {
-    let value = this.get("reqId");
+  get withdrawal_value(): BigInt {
+    let value = this.get("withdrawal_value");
     return value!.toBigInt();
   }
 
-  set reqId(value: BigInt) {
-    this.set("reqId", Value.fromBigInt(value));
+  set withdrawal_value(value: BigInt) {
+    this.set("withdrawal_value", Value.fromBigInt(value));
   }
 
-  get owner(): Bytes {
-    let value = this.get("owner");
+  get approval_count(): BigInt {
+    let value = this.get("approval_count");
+    return value!.toBigInt();
+  }
+
+  set approval_count(value: BigInt) {
+    this.set("approval_count", Value.fromBigInt(value));
+  }
+
+  get request_transaction(): string {
+    let value = this.get("request_transaction");
+    return value!.toString();
+  }
+
+  set request_transaction(value: string) {
+    this.set("request_transaction", Value.fromString(value));
+  }
+
+  get withdrawal_transaction(): string | null {
+    let value = this.get("withdrawal_transaction");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set withdrawal_transaction(value: string | null) {
+    if (!value) {
+      this.unset("withdrawal_transaction");
+    } else {
+      this.set("withdrawal_transaction", Value.fromString(<string>value));
+    }
+  }
+}
+
+export class Approval extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+
+    this.set("approval_transactions", Value.fromStringArray(new Array(0)));
+    this.set("request_id", Value.fromString(""));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save Approval entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type Approval must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("Approval", id.toString(), this);
+    }
+  }
+
+  static load(id: string): Approval | null {
+    return changetype<Approval | null>(store.get("Approval", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get approver(): Bytes | null {
+    let value = this.get("approver");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set approver(value: Bytes | null) {
+    if (!value) {
+      this.unset("approver");
+    } else {
+      this.set("approver", Value.fromBytes(<Bytes>value));
+    }
+  }
+
+  get is_last_approval_revoked(): boolean {
+    let value = this.get("is_last_approval_revoked");
+    return value!.toBoolean();
+  }
+
+  set is_last_approval_revoked(value: boolean) {
+    this.set("is_last_approval_revoked", Value.fromBoolean(value));
+  }
+
+  get revoked_transactions(): Array<string> | null {
+    let value = this.get("revoked_transactions");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toStringArray();
+    }
+  }
+
+  set revoked_transactions(value: Array<string> | null) {
+    if (!value) {
+      this.unset("revoked_transactions");
+    } else {
+      this.set(
+        "revoked_transactions",
+        Value.fromStringArray(<Array<string>>value)
+      );
+    }
+  }
+
+  get approval_transactions(): Array<string> {
+    let value = this.get("approval_transactions");
+    return value!.toStringArray();
+  }
+
+  set approval_transactions(value: Array<string>) {
+    this.set("approval_transactions", Value.fromStringArray(value));
+  }
+
+  get request_id(): string {
+    let value = this.get("request_id");
+    return value!.toString();
+  }
+
+  set request_id(value: string) {
+    this.set("request_id", Value.fromString(value));
+  }
+}
+
+export class Fee extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+
+    this.set("sender", Value.fromBytes(Bytes.empty()));
+    this.set("fee_transaction", Value.fromString(""));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save Fee entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type Fee must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("Fee", id.toString(), this);
+    }
+  }
+
+  static load(id: string): Fee | null {
+    return changetype<Fee | null>(store.get("Fee", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get sender(): Bytes {
+    let value = this.get("sender");
     return value!.toBytes();
   }
 
-  set owner(value: Bytes) {
-    this.set("owner", Value.fromBytes(value));
+  set sender(value: Bytes) {
+    this.set("sender", Value.fromBytes(value));
+  }
+
+  get fee_transaction(): string {
+    let value = this.get("fee_transaction");
+    return value!.toString();
+  }
+
+  set fee_transaction(value: string) {
+    this.set("fee_transaction", Value.fromString(value));
+  }
+}
+
+export class Transaction extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+
+    this.set("from", Value.fromBytes(Bytes.empty()));
+    this.set("gasUsed", Value.fromBigInt(BigInt.zero()));
+    this.set("value", Value.fromBigInt(BigInt.zero()));
+    this.set("blockNumber", Value.fromBigInt(BigInt.zero()));
+    this.set("timestamp", Value.fromBigInt(BigInt.zero()));
+    this.set("gasPrice", Value.fromBigInt(BigInt.zero()));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save Transaction entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type Transaction must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("Transaction", id.toString(), this);
+    }
+  }
+
+  static load(id: string): Transaction | null {
+    return changetype<Transaction | null>(store.get("Transaction", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get from(): Bytes {
+    let value = this.get("from");
+    return value!.toBytes();
+  }
+
+  set from(value: Bytes) {
+    this.set("from", Value.fromBytes(value));
+  }
+
+  get to(): Bytes | null {
+    let value = this.get("to");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set to(value: Bytes | null) {
+    if (!value) {
+      this.unset("to");
+    } else {
+      this.set("to", Value.fromBytes(<Bytes>value));
+    }
+  }
+
+  get gasUsed(): BigInt {
+    let value = this.get("gasUsed");
+    return value!.toBigInt();
+  }
+
+  set gasUsed(value: BigInt) {
+    this.set("gasUsed", Value.fromBigInt(value));
+  }
+
+  get value(): BigInt {
+    let value = this.get("value");
+    return value!.toBigInt();
+  }
+
+  set value(value: BigInt) {
+    this.set("value", Value.fromBigInt(value));
+  }
+
+  get blockNumber(): BigInt {
+    let value = this.get("blockNumber");
+    return value!.toBigInt();
+  }
+
+  set blockNumber(value: BigInt) {
+    this.set("blockNumber", Value.fromBigInt(value));
+  }
+
+  get timestamp(): BigInt {
+    let value = this.get("timestamp");
+    return value!.toBigInt();
+  }
+
+  set timestamp(value: BigInt) {
+    this.set("timestamp", Value.fromBigInt(value));
+  }
+
+  get gasPrice(): BigInt {
+    let value = this.get("gasPrice");
+    return value!.toBigInt();
+  }
+
+  set gasPrice(value: BigInt) {
+    this.set("gasPrice", Value.fromBigInt(value));
+  }
+
+  get requests(): Array<string> | null {
+    let value = this.get("requests");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toStringArray();
+    }
+  }
+
+  set requests(value: Array<string> | null) {
+    if (!value) {
+      this.unset("requests");
+    } else {
+      this.set("requests", Value.fromStringArray(<Array<string>>value));
+    }
+  }
+
+  get approvals(): Array<string> | null {
+    let value = this.get("approvals");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toStringArray();
+    }
+  }
+
+  set approvals(value: Array<string> | null) {
+    if (!value) {
+      this.unset("approvals");
+    } else {
+      this.set("approvals", Value.fromStringArray(<Array<string>>value));
+    }
+  }
+
+  get fees(): Array<string> | null {
+    let value = this.get("fees");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toStringArray();
+    }
+  }
+
+  set fees(value: Array<string> | null) {
+    if (!value) {
+      this.unset("fees");
+    } else {
+      this.set("fees", Value.fromStringArray(<Array<string>>value));
+    }
   }
 }

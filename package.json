@@ -5,8 +5,8 @@
   "repository": "https://github.com/graphprotocol/om_wallet",
   "scripts": {
     "codegen": "graph codegen --output-dir src/types/",
-    "build": "graph build",
-    "deploy": "graph deploy --node https://api.studio.thegraph.com/deploy/ om_wallet",
+    "build": "graph codegen && graph build",
+    "deploy": "graph codegen && graph build && graph deploy --node https://api.studio.thegraph.com/deploy/ om_wallet",
     "create-local": "graph create --node http://localhost:8020/ om_wallet",
     "remove-local": "graph remove --node http://localhost:8020/ om_wallet",
     "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 om_wallet"
@@ -16,10 +16,7 @@
     "@graphprotocol/graph-ts": "0.26.0"
   },
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^5.15.0",
-    "@typescript-eslint/parser": "^5.15.0",
     "eslint": "^8.11.0",
-    "eslint-config-prettier": "^8.5.0",
     "prettier": "^2.5.1",
     "typescript": "^4.6.2"
   }

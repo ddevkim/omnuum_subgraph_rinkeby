@@ -2,13 +2,15 @@ specVersion: 0.0.2
 schema:
   file: ./schema.graphql
 dataSources:
-  - kind: ethereum
+  - kind: ethereum/contract
     name: OmnuumWallet
     network: rinkeby
     source:
       address: "0xcF7b254EB3E0F179662959e3522AB8219F590950"
       abi: OmnuumWallet
+      startBlock: 10332686
     mapping:
+      file: ./src/mappings/wallet.ts
       kind: ethereum/events
       apiVersion: 0.0.5
       language: wasm/assemblyscript
@@ -32,4 +34,3 @@ dataSources:
           handler: handleRevoked
         - event: Withdrawn(indexed uint256,indexed address,uint256)
           handler: handleWithdrawn
-      file: ./src/mapping.ts

@@ -1,43 +1,39 @@
 type Request @entity {
-  id: ID!
-  requestId: BigInt!
-  requester: Bytes!
-  value: BigInt!
-  withdrawn: Boolean!
-  transaction: Transaction!
+  id: ID!  #reqId
+  requester: Bytes #msg.sender
+  request_value: BigInt!
+  withdrawal_value: BigInt!
+  approval_count: BigInt!
+  request_transaction: Transaction!
+  withdrawal_transaction: Transaction
 }
 
 type Approval @entity {
-  id: ID!
-  requestId: BigInt!
-  request: Request!
-  approver: Bytes!
-  transaction: Transaction!
+  id: ID! #reqId + approverAddress
+  approver: Bytes
+  is_last_approval_revoked: Boolean
+  revoked_transactions: [Transaction!]
+  approval_transactions: [Transaction!]!
+  request_id: Request!
 }
 
-type Revoke @entity {
-  id: ID!
-  requestId: BigInt! #pointer to Request
-  request: Request!
-  approver: Bytes!
-  transaction: Transaction!
-}
-
-type withdrawal @entity {
-  id: ID!
-  requestId: BigInt!
-  request: Request!
-  destination: Bytes!
-  withdrawalValue: BigInt!
-  transaction: Transaction!
+type Fee @entity {
+  id: ID! #transactionHash
+  sender: Bytes! #msg.sender
+  fee_transaction: Transaction!
 }
 
 type Transaction @entity {
-  # transaction hash
-  id: ID!
+  id: ID! #transactionHash
+  from: Bytes!
+  to: Bytes
+  gasUsed: BigInt!
+  value: BigInt!
   blockNumber: BigInt!
   timestamp: BigInt!
-  gasUsed: BigInt!
   gasPrice: BigInt!
-  requests: [Request!]! @derivedFrom(field: "transaction")
+    # derived values
+  requests: [Request!] @derivedFrom(field: "request_transaction")
+  approvals: [Approval!] @derivedFrom(field: "approval_transactions")
+  fees: [Fee!] @derivedFrom(field: "fee_transaction")
 }
