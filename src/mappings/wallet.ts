@@ -6,7 +6,6 @@ import { saveTransaction } from '../utils';
 
 export function handleRequested(event: Requested): void {
   const id = event.params.reqId.toHexString();
-  log.debug('____REQUESTED : {} {}', [id, event.transaction.hash.toHexString()]);
 
   let request = Request.load(id);
   if (!request) {
