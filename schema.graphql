@@ -1,27 +1,3 @@
-type Request @entity {
-  id: ID!  #reqId
-  requester: Bytes #msg.sender
-  request_value: BigInt!
-  withdrawal_value: BigInt!
-  approval_count: BigInt!
-  request_transaction: Transaction!
-  withdrawal_transaction: Transaction
-}
-
-type Approval @entity {
-  id: ID! #reqId + approverAddress
-  approver: Bytes
-  is_last_approval_revoked: Boolean
-  revoked_transactions: [Transaction!]
-  approval_transactions: [Transaction!]!
-  request_id: Request!
-}
-
-type Fee @entity {
-  id: ID! #transactionHash
-  sender: Bytes! #msg.sender
-  fee_transaction: Transaction!
-}
 
 type Transaction @entity {
   id: ID! #transactionHash
@@ -32,8 +8,46 @@ type Transaction @entity {
   blockNumber: BigInt!
   timestamp: BigInt!
   gasPrice: BigInt!
-    # derived values
+  # derived values
   requests: [Request!] @derivedFrom(field: "request_transaction")
   approvals: [Approval!] @derivedFrom(field: "approval_transactions")
   fees: [Fee!] @derivedFrom(field: "fee_transaction")
+}
+
+type Request @entity {
+  id: ID!  #reqId
+  requester: Bytes! #msg.sender
+  request_value: BigInt!
+  withdrawal_value: BigInt!
+  approval_count: BigInt!
+  request_transaction: Transaction!
+  withdrawal_transaction: Transaction
+}
+
+type Approval @entity {
+  id: ID! #reqId + approverAddress
+  approver: Bytes!
+  is_last_approval_revoked: Boolean
+  revoked_transactions: [Transaction!]
+  approval_transactions: [Transaction!]!
+  request_id: Request!
+}
+
+# id : transactionHash
+type Fee @entity {
+  id: ID! #transactionHash
+  sender: Bytes! #msg.sender
+  fee_transaction: Transaction!
+}
+
+#Todo - cover uri ipfs hash 를 받아서 이걸로 ipfs 다운 받아서 컨트랙 정보들을 함께 넣기
+type NftContract @entity {
+  id: ID! #nft contract address
+  nft_contract_transaction: Transaction!
+  initial_owner: Bytes!
+  item_name: String
+  description: String
+  total_supply: BigInt
+  image_url: String
+  video_url: String
 }

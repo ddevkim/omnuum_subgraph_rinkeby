@@ -34,3 +34,30 @@ dataSources:
           handler: handleRevoked
         - event: Withdrawn(indexed uint256,indexed address,uint256)
           handler: handleWithdrawn
+
+  - kind: ethereum/contract
+    name: OmnuumCAManager
+    network: rinkeby
+    source:
+      address: "0x3226816eb1e92916d61767cf594a7887D2ab60c7"
+      abi: OmnuumCAManager
+      startBlock: 10343070
+    mapping:
+      file: ./src/mappings/caManager.ts
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - ManagerContractRegistered
+        - ManagerContractRemoved
+        - NftContractRegistered
+      abis:
+        - name: OmnuumCAManager
+          file: ./abis/OmnuumCAManager.json
+      eventHandlers:
+        - event: NftContractRegistered(address,address)
+          handler: handleNftContractRegistered
+        - event: ManagerContractRegistered(address,bytes32)
+          handler: handleManagerContractRegistered
+        - event: ManagerContractRemoved(address,bytes32)
+          handler: handleManagerContractRemoved
