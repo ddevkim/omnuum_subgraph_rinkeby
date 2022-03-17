@@ -12,6 +12,7 @@ type Transaction @entity {
   requests: [Request!] @derivedFrom(field: "request_transaction")
   approvals: [Approval!] @derivedFrom(field: "approval_transactions")
   fees: [Fee!] @derivedFrom(field: "fee_transaction")
+  contracts: [Contract!] @derivedFrom(field: "register_transaction")
 }
 
 type Request @entity {
@@ -40,14 +41,11 @@ type Fee @entity {
   fee_transaction: Transaction!
 }
 
-#Todo - cover uri ipfs hash 를 받아서 이걸로 ipfs 다운 받아서 컨트랙 정보들을 함께 넣기
-type NftContract @entity {
+type Contract @entity {
   id: ID! #nft contract address
-  nft_contract_transaction: Transaction!
-  initial_owner: Bytes!
-  item_name: String
-  description: String
-  total_supply: BigInt
-  image_url: String
-  video_url: String
+  register_transaction: Transaction!
+  remove_transaction: Transaction
+  owner: Bytes!
+  topic: String
+  is_removed: Boolean!
 }

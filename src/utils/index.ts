@@ -1,19 +1,9 @@
-import { Entity, ethereum, log } from '@graphprotocol/graph-ts';
+import { crypto, Entity, ethereum, log } from '@graphprotocol/graph-ts';
 import { Approval, Transaction } from '../types/schema';
 import { Address, BigInt } from '@graphprotocol/graph-ts/common/numbers';
-import { Bytes } from '@graphprotocol/graph-ts/common/collections';
+import { ByteArray, Bytes } from '@graphprotocol/graph-ts/common/collections';
 
 export function saveTransaction(event: ethereum.Event): Transaction {
-  log.debug('_____TRANSACTION {}', [event.transaction.hash.toHexString()]);
-  log.debug('_______TRANSACTION {} {} {} {} {} {} {}', [
-    event.transaction.from.toHexString(),
-    event.transaction.to!.toHexString(),
-    event.block.gasUsed.toString(),
-    event.transaction.value.toString(),
-    event.block.number.toString(),
-    event.block.timestamp.toString(),
-    event.transaction.gasPrice.toString(),
-  ]);
   const id: string = event.transaction.hash.toHexString();
   let transaction = Transaction.load(event.transaction.hash.toHexString());
   if (!transaction) {
@@ -37,4 +27,24 @@ export function getUniqueIdFromTxLog(event: ethereum.Event): string {
   const trxHash = event.transaction.hash.toHexString();
   const logIndex = event.logIndex.toHexString();
   return `${trxHash}_${logIndex}`;
+}
+
+export function convertContractTopicToString(topicHash: Bytes): string {
+  if (crypto.keccak256(ByteArray.fromUTF8('NFT'))) {
+    return 'NFT';
+  } else if (crypto.keccak256(ByteArray.fromUTF8('VERIFIER'))) {
+    return 'VERIFIER';
+  } else if (crypto.keccak256(ByteArray.fromUTF8('TICKET'))) {
+    return 'TICKET';
+  } else if (crypto.keccak256(ByteArray.fromUTF8('MINTMANAGER'))) {
+    return 'MINTMANAGER';
+  } else if (crypto.keccak256(ByteArray.fromUTF8('EXCHANGE'))) {
+    return 'EXCHANGE';
+  } else if (crypto.keccak256(ByteArray.fromUTF8('WALLET'))) {
+    return 'WALLET';
+  } else if (crypto.keccak256(ByteArray.fromUTF8('REVEAL'))) {
+    return 'REVEAL';
+  } else {
+    return 'UNRECOGNIZED';
+  }
 }
