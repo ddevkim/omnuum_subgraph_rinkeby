@@ -1,22 +1,26 @@
 
 type Transaction @entity {
   id: ID! #transactionHash
+  blockNumber: BigInt!
+  eventSelectors: [String!]!
   from: Bytes!
   to: Bytes
   gasUsed: BigInt!
   value: BigInt!
-  blockNumber: BigInt!
   timestamp: BigInt!
   gasPrice: BigInt!
-  # derived values
+  "Derived Values"
   requests: [Request!] @derivedFrom(field: "request_transaction")
   approvals: [Approval!] @derivedFrom(field: "approval_transactions")
   fees: [Fee!] @derivedFrom(field: "fee_transaction")
   contracts: [Contract!] @derivedFrom(field: "register_transaction")
+  mints: [Mint!] @derivedFrom(field: "mint_transaction")
 }
 
 type Request @entity {
+  "MAIN EVENTs FOR WALLET"
   id: ID!  #reqId
+  blockNumber: BigInt!
   requester: Bytes! #msg.sender
   request_value: BigInt!
   withdrawal_value: BigInt!
@@ -26,7 +30,9 @@ type Request @entity {
 }
 
 type Approval @entity {
+  "MAIN EVENTs FOR WALLET"
   id: ID! #reqId + approverAddress
+  blockNumber: BigInt!
   approver: Bytes!
   is_last_approval_revoked: Boolean
   revoked_transactions: [Transaction!]
@@ -36,16 +42,46 @@ type Approval @entity {
 
 # id : transactionHash
 type Fee @entity {
+  "MAIN EVENTs FOR WALLET"
   id: ID! #transactionHash
+  blockNumber: BigInt!
   sender: Bytes! #msg.sender
   fee_transaction: Transaction!
 }
 
+enum ContractTopic {
+  NFT
+  VRF
+  VERIFIER
+  TICKET
+  MINTMANAGER
+  EXCHANGE
+  WALLET
+  REVEAL
+  UNRECOGNIZED
+}
+
 type Contract @entity {
+  "MAIN EVENTs FOR CA_MANAGER"
   id: ID! #nft contract address
+  blockNumber: BigInt!
   register_transaction: Transaction!
   remove_transaction: Transaction
   owner: Bytes!
-  topic: String
+  topic: ContractTopic!
   is_removed: Boolean!
+  is_revealed: Boolean
+  max_supply: BigInt
+  cover_url: String
+  reveal_url: String
+}
+
+type Mint @entity {
+  "MAIN EVENTs FOR NFT_PROJECTs"
+  id: ID! # contractAddress + tokenId
+  blockNumber: BigInt!
+  contract: Contract!
+  minter: Bytes!
+  tokenId: BigInt!
+  mint_transaction: Transaction!
 }
