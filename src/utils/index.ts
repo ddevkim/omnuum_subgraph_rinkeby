@@ -1,8 +1,8 @@
-import { crypto, Entity, ethereum, log } from '@graphprotocol/graph-ts';
-import { Contract, Approval, Transaction } from '../types/schema';
+import { crypto, ethereum, log } from '@graphprotocol/graph-ts';
+import { Contract, Transaction } from '../types/schema';
 import { ByteArray, Bytes } from '@graphprotocol/graph-ts/common/collections';
 
-export function getContractTopic(contractAddress: Bytes): string {
+export function getContractTopicFromAddress(contractAddress: Bytes): string {
   const contractEntity = Contract.load(contractAddress.toHexString());
   return contractEntity ? contractEntity.topic : 'undefined';
 }
@@ -13,11 +13,15 @@ export function getContractTopic(contractAddress: Bytes): string {
     @ id: transactionHash (hexString)
     @ main interaction contract: Various
 */
-export function saveTransaction(event: ethereum.Event, eventName: string): Transaction {
+export function saveTransaction(event: ethereum.Event, eventName: string, contractTopic: string = ''): Transaction {
   const id = event.transaction.hash.toHexString();
+  log.info('___HANDLING TRANSACTION HASH:{} EVENT:{}', [id, eventName]);
+
   let transaction = Transaction.load(id);
 
-  const eventSelector = `${getContractTopic(event.address)}_${eventName}`;
+  const eventSelector = contractTopic
+    ? `${contractTopic}_${eventName}`
+    : `${getContractTopicFromAddress(event.address)}_${eventName}`;
 
   if (!transaction) {
     // if not exist transaction => create transaction row
@@ -38,6 +42,8 @@ export function saveTransaction(event: ethereum.Event, eventName: string): Trans
     if (!transaction.eventSelectors.includes(eventSelector)) {
       log.info('___PUSH EVENTS at the SAME TRANSACTION {} {}', [event.transaction.hash.toHexString(), eventSelector]);
       // if the same events emitted in the same transaction, just ignore it avoid duplication
+      transaction.blockNumber = event.block.number;
+      transaction.timestamp = event.block.timestamp;
       const eventSelectors = transaction.eventSelectors;
       eventSelectors.push(eventSelector);
       transaction.eventSelectors = eventSelectors;
@@ -89,6 +95,17 @@ export function convertContractTopicHashToString(topicHashStr: string): string {
   }
 }
 
+export enum ContractTopic {
+  NFT,
+  VRF,
+  VERIFIER,
+  TICKET,
+  MINTMANAGER,
+  EXCHANGE,
+  WALLET,
+  REVEAL,
+}
+
 export enum EventName {
   Requested,
   Approved,
@@ -99,6 +116,30 @@ export enum EventName {
   ManagerContractRegistered,
   ManagerContractRemoved,
   TransferSingle,
+  Uri,
+}
+
+export function getContractTopicFromString(contractTopic: ContractTopic): string {
+  switch (contractTopic) {
+    case ContractTopic.NFT:
+      return 'NFT';
+    case ContractTopic.VRF:
+      return 'VRF';
+    case ContractTopic.VERIFIER:
+      return 'VERIFIER';
+    case ContractTopic.TICKET:
+      return 'TICKET';
+    case ContractTopic.MINTMANAGER:
+      return 'MINTMANAGER';
+    case ContractTopic.EXCHANGE:
+      return 'EXCHANGE';
+    case ContractTopic.WALLET:
+      return 'WALLET';
+    case ContractTopic.REVEAL:
+      return 'REVEAL';
+    default:
+      return 'UNRECOGNIZED';
+  }
 }
 
 export function getEventName(eventName: EventName): string {
@@ -119,15 +160,9 @@ export function getEventName(eventName: EventName): string {
       return 'ManagerContractRegistered';
     case EventName.ManagerContractRemoved:
       return 'ManagerContractRemoved';
+    case EventName.Uri:
+      return 'Uri';
     default:
       return 'undefined';
   }
 }
-
-// export class getEventName {
-//   constructor(public name: EventName) {}
-//
-//   getEvent(): string {
-//   }
-//
-// }

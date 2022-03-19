@@ -6,7 +6,8 @@
   "scripts": {
     "codegen": "graph codegen --output-dir src/types/",
     "build": "graph codegen --output-dir src/types/ && graph build",
-    "deploy": "graph codegen --output-dir && graph build && graph deploy --node https://api.studio.thegraph.com/deploy/ om_wallet",
+    "deploy:testnet": "graph codegen --output-dir src/types/ && graph build && graph deploy --node https://api.studio.thegraph.com/deploy/ om_wallet",
+    "deploy:hosting": "graph codegen --output-dir src/types/ && graph build && graph deploy --product hosted-service ddevkim/omnuum-rinkeby",
     "create-local": "graph create --node http://localhost:8020/ om_wallet",
     "remove-local": "graph remove --node http://localhost:8020/ om_wallet",
     "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 om_wallet"

@@ -1,4 +1,6 @@
 specVersion: 0.0.2
+description: A protocol for NFT minting
+repository: https://github.com/ddevkim/omnuum_subgraph_rinkeby
 schema:
   file: ./schema.graphql
 dataSources:
@@ -6,9 +8,9 @@ dataSources:
     name: OmnuumWallet
     network: rinkeby
     source:
+      startBlock: 10351405
       address: "0x973DCf54b83A5DB8761A4DaC364D0F28f8728459"
       abi: OmnuumWallet
-      startBlock: 10351405
     mapping:
       file: ./src/mappings/wallet.ts
       kind: ethereum/events
@@ -37,9 +39,9 @@ dataSources:
     name: OmnuumCAManager
     network: rinkeby
     source:
+      startBlock: 10351393
       address: "0x3cc46693C1Bb29cB3029B4a101bD3EF80f9e9F48"
       abi: OmnuumCAManager
-      startBlock: 10351393
     mapping:
       file: ./src/mappings/caManager.ts
       kind: ethereum/events

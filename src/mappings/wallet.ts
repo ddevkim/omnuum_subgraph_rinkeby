@@ -12,12 +12,14 @@ import { getEventName, saveTransaction, EventName } from '../utils';
 */
 export function handleRequested(event: Requested): void {
   const id = event.params.reqId.toHexString();
+  const transaction = saveTransaction(event, getEventName(EventName.Requested));
+
+  log.info('___handleRequested id: {}, tx_id: {}', [id, transaction.id]);
 
   let requestEntity = Request.load(id);
   if (!requestEntity) {
     requestEntity = new Request(id);
   }
-  const transaction = saveTransaction(event, getEventName(EventName.Requested));
 
   requestEntity.blockNumber = event.block.number;
   requestEntity.requester = event.params.requester;
@@ -29,16 +31,18 @@ export function handleRequested(event: Requested): void {
 }
 
 export function handleApproved(event: Approved): void {
-  const reqId = event.params.reqId;
   const owner = event.params.owner;
-
+  const reqId = event.params.reqId;
   const id = `${reqId.toHexString()}_${owner.toHexString()}`;
+
+  const transaction = saveTransaction(event, getEventName(EventName.Approved));
+
+  log.info('___handleApproved id: {} req_id: {} tx_id: {}', [id, reqId.toHexString(), transaction.id]);
+
   let approvalEntity = Approval.load(id);
   if (!approvalEntity) {
     approvalEntity = new Approval(id);
   }
-
-  const transaction = saveTransaction(event, getEventName(EventName.Approved));
 
   approvalEntity.approver = owner;
   approvalEntity.is_last_approval_revoked = false;
@@ -71,8 +75,9 @@ export function handleRevoked(event: Revoked): void {
   const reqId = event.params.reqId;
   const owner = event.params.owner;
   const id = `${reqId.toHexString()}_${owner.toHexString()}`;
-
   const transaction = saveTransaction(event, getEventName(EventName.Revoked));
+
+  log.info('___handleApproved id: {} req_id: {} tx_id: {}', [id, reqId.toHexString(), transaction.id]);
 
   const approvalEntity = Approval.load(id);
 
@@ -107,13 +112,15 @@ export function handleRevoked(event: Revoked): void {
 }
 
 export function handleWithdrawn(event: Withdrawn): void {
-  const id = event.params.reqId.toHexString();
+  const reqId = event.params.reqId.toHexString();
 
   const transaction = saveTransaction(event, getEventName(EventName.Withdrawn));
 
-  const requestEntity = Request.load(id);
+  log.info('___handleWithdrawn req_id: {} tx_id: {}', [reqId, transaction.id]);
+
+  const requestEntity = Request.load(reqId);
   if (!requestEntity) {
-    log.error('NO request entity of id {}', [id]);
+    log.error('NO request entity of id {}', [reqId]);
   } else {
     requestEntity.withdrawal_value = event.params.value;
     requestEntity.withdrawal_transaction = transaction.id;
@@ -123,16 +130,17 @@ export function handleWithdrawn(event: Withdrawn): void {
 
 export function handleFeeReceived(event: FeeReceived): void {
   const transaction = saveTransaction(event, getEventName(EventName.FeeReceived));
-
-  log.debug('FEE____RECEIVED : {} {}', [transaction.id, event.params.sender.toHexString()]);
   const id = transaction.id; // transaction hash
+  const sender = event.params.sender;
+
+  log.info('___handleWithdrawn tx_id: {} sender: {}', [id, sender.toHexString()]);
 
   let feeEntity = Fee.load(id);
   if (!feeEntity) {
     feeEntity = new Fee(id);
   }
 
-  feeEntity.sender = event.params.sender;
+  feeEntity.sender = sender;
   feeEntity.fee_transaction = id;
 
   feeEntity.save();
