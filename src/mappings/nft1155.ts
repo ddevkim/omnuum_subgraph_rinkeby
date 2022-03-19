@@ -9,7 +9,7 @@ export function handleTransferSingle(event: TransferSingle): void {
   const id = `${nftContractAddress}_${tokenId}`;
   const minter = event.params.to;
 
-  log.info('___handleTransferSingle id: {} token_id: {} nftContractAddress: {} minter: {}', [
+  log.info('___LOG handleTransferSingle id: {} token_id: {} nftContractAddress: {} minter: {}', [
     id,
     tokenId.toHexString(),
     nftContractAddress,

@@ -3,6 +3,7 @@ import { Contract, Transaction } from '../types/schema';
 import { ByteArray, Bytes } from '@graphprotocol/graph-ts/common/collections';
 
 export function getContractTopicFromAddress(contractAddress: Bytes): string {
+  log.debug('___LOG getContractTopicFromAddress address: {}', [contractAddress.toHexString()]);
   const contractEntity = Contract.load(contractAddress.toHexString());
   return contractEntity ? contractEntity.topic : 'undefined';
 }
@@ -15,17 +16,17 @@ export function getContractTopicFromAddress(contractAddress: Bytes): string {
 */
 export function saveTransaction(event: ethereum.Event, eventName: string, contractTopic: string = ''): Transaction {
   const id = event.transaction.hash.toHexString();
-  log.info('___HANDLING TRANSACTION HASH:{} EVENT:{}', [id, eventName]);
+  const eventSelector =
+    contractTopic !== ''
+      ? `${contractTopic}_${eventName}`
+      : `${getContractTopicFromAddress(event.address)}_${eventName}`;
+  log.info('___LOG HANDLING TRANSACTION HASH:{} EVENT_SELECTOR:{}', [id, eventSelector]);
 
   let transaction = Transaction.load(id);
 
-  const eventSelector = contractTopic
-    ? `${contractTopic}_${eventName}`
-    : `${getContractTopicFromAddress(event.address)}_${eventName}`;
-
   if (!transaction) {
     // if not exist transaction => create transaction row
-    log.info('___INSERT TRANSACTION {} {}', [event.transaction.hash.toHexString(), eventSelector]);
+    log.info('___LOG INSERT TRANSACTION {} {}', [event.transaction.hash.toHexString(), eventSelector]);
     transaction = new Transaction(event.transaction.hash.toHexString());
     transaction.blockNumber = event.block.number;
     transaction.eventSelectors = [eventSelector];
@@ -40,7 +41,10 @@ export function saveTransaction(event: ethereum.Event, eventName: string, contra
     // if previous exists transaction in case of a transaction contains multiple events,
     // push eventSelector to eventSelectors array to keep tracking all the multiple events
     if (!transaction.eventSelectors.includes(eventSelector)) {
-      log.info('___PUSH EVENTS at the SAME TRANSACTION {} {}', [event.transaction.hash.toHexString(), eventSelector]);
+      log.info('___LOG PUSH EVENTS at the SAME TRANSACTION {} {}', [
+        event.transaction.hash.toHexString(),
+        eventSelector,
+      ]);
       // if the same events emitted in the same transaction, just ignore it avoid duplication
       transaction.blockNumber = event.block.number;
       transaction.timestamp = event.block.timestamp;
@@ -49,7 +53,7 @@ export function saveTransaction(event: ethereum.Event, eventName: string, contra
       transaction.eventSelectors = eventSelectors;
       transaction.save();
     } else {
-      log.info('___DUPLICATE EVENTS at the SAME TRANSACTION {} {}', [
+      log.info('___LOG DUPLICATE EVENTS at the SAME TRANSACTION {} {}', [
         event.transaction.hash.toHexString(),
         eventSelector,
       ]);
@@ -69,6 +73,9 @@ export function convertContractTopicHashToString(topicHashStr: string): string {
   if (crypto.keccak256(ByteArray.fromUTF8('NFT')).toHexString() == topicHashStr) {
     log.debug('KECCAK___RESULT NFT {}', [crypto.keccak256(ByteArray.fromUTF8('NFT')).toHexString()]);
     return 'NFT';
+  } else if (crypto.keccak256(ByteArray.fromUTF8('CAMANAGER')).toHexString() == topicHashStr) {
+    log.debug('KECCAK___RESULT VERIFIER {}', [crypto.keccak256(ByteArray.fromUTF8('CAMANAGER')).toHexString()]);
+    return 'CAMANAGER';
   } else if (crypto.keccak256(ByteArray.fromUTF8('VERIFIER')).toHexString() == topicHashStr) {
     log.debug('KECCAK___RESULT VERIFIER {}', [crypto.keccak256(ByteArray.fromUTF8('VERIFIER')).toHexString()]);
     return 'VERIFIER';
@@ -96,6 +103,7 @@ export function convertContractTopicHashToString(topicHashStr: string): string {
 }
 
 export enum ContractTopic {
+  CAMANAGER,
   NFT,
   VRF,
   VERIFIER,
@@ -121,6 +129,8 @@ export enum EventName {
 
 export function getContractTopicFromString(contractTopic: ContractTopic): string {
   switch (contractTopic) {
+    case ContractTopic.CAMANAGER:
+      return 'CAMANAGER';
     case ContractTopic.NFT:
       return 'NFT';
     case ContractTopic.VRF:

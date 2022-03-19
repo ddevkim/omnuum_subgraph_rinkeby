@@ -14,7 +14,7 @@ export function handleRequested(event: Requested): void {
   const id = event.params.reqId.toHexString();
   const transaction = saveTransaction(event, getEventName(EventName.Requested));
 
-  log.info('___handleRequested id: {}, tx_id: {}', [id, transaction.id]);
+  log.info('___LOG handleRequested id: {}, tx_id: {}', [id, transaction.id]);
 
   let requestEntity = Request.load(id);
   if (!requestEntity) {
@@ -37,7 +37,7 @@ export function handleApproved(event: Approved): void {
 
   const transaction = saveTransaction(event, getEventName(EventName.Approved));
 
-  log.info('___handleApproved id: {} req_id: {} tx_id: {}', [id, reqId.toHexString(), transaction.id]);
+  log.info('___LOG handleApproved id: {} req_id: {} tx_id: {}', [id, reqId.toHexString(), transaction.id]);
 
   let approvalEntity = Approval.load(id);
   if (!approvalEntity) {
@@ -77,7 +77,7 @@ export function handleRevoked(event: Revoked): void {
   const id = `${reqId.toHexString()}_${owner.toHexString()}`;
   const transaction = saveTransaction(event, getEventName(EventName.Revoked));
 
-  log.info('___handleApproved id: {} req_id: {} tx_id: {}', [id, reqId.toHexString(), transaction.id]);
+  log.info('___LOG handleApproved id: {} req_id: {} tx_id: {}', [id, reqId.toHexString(), transaction.id]);
 
   const approvalEntity = Approval.load(id);
 
@@ -116,7 +116,7 @@ export function handleWithdrawn(event: Withdrawn): void {
 
   const transaction = saveTransaction(event, getEventName(EventName.Withdrawn));
 
-  log.info('___handleWithdrawn req_id: {} tx_id: {}', [reqId, transaction.id]);
+  log.info('LOG ___handleWithdrawn req_id: {} tx_id: {}', [reqId, transaction.id]);
 
   const requestEntity = Request.load(reqId);
   if (!requestEntity) {
@@ -133,7 +133,7 @@ export function handleFeeReceived(event: FeeReceived): void {
   const id = transaction.id; // transaction hash
   const sender = event.params.sender;
 
-  log.info('___handleWithdrawn tx_id: {} sender: {}', [id, sender.toHexString()]);
+  log.info('___LOG handleWithdrawn tx_id: {} sender: {}', [id, sender.toHexString()]);
 
   let feeEntity = Fee.load(id);
   if (!feeEntity) {

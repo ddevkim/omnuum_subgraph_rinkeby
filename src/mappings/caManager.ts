@@ -21,7 +21,7 @@ export function handleNftContractRegistered(event: NftContractRegistered): void 
   const id = event.params.nftContract.toHexString();
   const contractTopic = getContractTopicFromString(ContractTopic.NFT);
 
-  log.info('___handleNftContractRegistered id: {} topic: {}', [id, contractTopic]);
+  log.info('___LOG handleNftContractRegistered id: {} topic: {}', [id, contractTopic]);
 
   OmnuumNFT1155.create(event.params.nftContract);
 
@@ -32,16 +32,36 @@ export function handleNftContractRegistered(event: NftContractRegistered): void 
 
   const transaction = saveTransaction(event, getEventName(EventName.NftContractRegistered), contractTopic);
 
+  log.debug('___LOG nftContractBinding nftContractAddress: {}', [event.params.nftContract.toHexString()]);
   const nftContract = NftContract.bind(event.params.nftContract);
+  log.debug('___LOG nftContractBinded nftContractAddress: {}', [event.params.nftContract.toHexString()]);
 
   contractEntity.blockNumber = event.block.number;
   contractEntity.register_transaction = transaction.id;
   contractEntity.owner = event.params.nftOwner;
   contractEntity.topic = contractTopic;
   contractEntity.is_removed = false;
-  contractEntity.max_supply = nftContract.maxSupply();
-  contractEntity.is_revealed = nftContract.isRevealed();
-  contractEntity.cover_url = nftContract.coverUri();
+
+  // let maxSupplyResult = nftContract.try_maxSupply();
+  // if (maxSupplyResult.reverted) {
+  //   log.debug('maxSupply reverted', []);
+  // } else {
+  //   contractEntity.max_supply = maxSupplyResult.value;
+  // }
+  //
+  // let isRevealedResult = nftContract.try_isRevealed();
+  // if (isRevealedResult.reverted) {
+  //   log.debug('is_revealed reverted', []);
+  // } else {
+  //   contractEntity.is_revealed = isRevealedResult.value;
+  // }
+  //
+  // let coverUriResult = nftContract.try_coverUri();
+  // if (coverUriResult.reverted) {
+  //   log.debug('coverUri reverted', []);
+  // } else {
+  //   contractEntity.cover_url = coverUriResult.value;
+  // }
 
   contractEntity.save();
 }
@@ -50,14 +70,18 @@ export function handleManagerContractRegistered(event: ManagerContractRegistered
   const id = event.params.managerContract.toHexString();
   const contractTopic = convertContractTopicHashToString(event.params.topic.toHexString());
 
-  log.info('___handleManagerContractRegistered id: {} topic: {}', [id, contractTopic]);
+  log.info('___LOG handleManagerContractRegistered id: {} topic: {}', [id, contractTopic]);
 
   let contractEntity = Contract.load(id);
   if (!contractEntity) {
     contractEntity = new Contract(id);
   }
 
-  const transaction = saveTransaction(event, getEventName(EventName.ManagerContractRegistered), contractTopic);
+  const transaction = saveTransaction(
+    event,
+    getEventName(EventName.ManagerContractRegistered),
+    contractTopic === 'CAMANAGER' ? contractTopic : ''
+  );
 
   contractEntity.blockNumber = event.block.number;
   contractEntity.register_transaction = transaction.id;
@@ -71,7 +95,7 @@ export function handleManagerContractRegistered(event: ManagerContractRegistered
 export function handleManagerContractRemoved(event: ManagerContractRemoved): void {
   const id = event.params.managerContract.toHexString();
 
-  log.info('___handleManagerContractRemoved id: {}', [id]);
+  log.info('___LOG handleManagerContractRemoved id: {}', [id]);
 
   let contractEntity = Contract.load(id);
 

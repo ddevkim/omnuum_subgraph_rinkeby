@@ -6,15 +6,18 @@
   "scripts": {
     "codegen": "graph codegen --output-dir src/types/",
     "build": "graph codegen --output-dir src/types/ && graph build",
-    "deploy:testnet": "graph codegen --output-dir src/types/ && graph build && graph deploy --node https://api.studio.thegraph.com/deploy/ om_wallet",
-    "deploy:hosting": "graph codegen --output-dir src/types/ && graph build && graph deploy --product hosted-service ddevkim/omnuum-rinkeby",
+    "deploy:testnet1": "graph codegen --output-dir src/types/ && graph build && graph deploy --studio om_rinkeby_test_v1",
+    "deploy:testnet2": "graph codegen --output-dir src/types/ && graph build && graph deploy --studio om_rinkeby_test_v2",
+    "deploy:host_rinkeby": "graph codegen --output-dir src/types/ && graph build && graph deploy --product hosted-service ddevkim/omnuum-rinkeby",
+    "deploy:host_ropsten": "graph codegen --output-dir src/types/ && graph build &&graph deploy --product hosted-service ddevkim/omnuum-ropsten-v1",
     "create-local": "graph create --node http://localhost:8020/ om_wallet",
     "remove-local": "graph remove --node http://localhost:8020/ om_wallet",
     "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 om_wallet"
   },
   "dependencies": {
-    "@graphprotocol/graph-cli": "0.28.0",
-    "@graphprotocol/graph-ts": "0.26.0"
+    "@graphprotocol/graph-cli": "^0.28.1",
+    "@graphprotocol/graph-ts": "0.26.0",
+    "@openzeppelin/subgraphs": "^0.1.7-1"
   },
   "devDependencies": {
     "eslint": "^8.11.0",

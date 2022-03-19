@@ -50,6 +50,7 @@ type Fee @entity {
 }
 
 enum ContractTopic {
+  CAMANAGER
   NFT
   VRF
   VERIFIER

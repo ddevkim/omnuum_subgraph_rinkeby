@@ -1,0 +1,1 @@
+/opt/homebrew/Cellar/postgresql/14.2_1/bin/postgres "-D" ".postgres"

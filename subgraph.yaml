@@ -3,13 +3,14 @@ description: A protocol for NFT minting
 repository: https://github.com/ddevkim/omnuum_subgraph_rinkeby
 schema:
   file: ./schema.graphql
+
 dataSources:
   - kind: ethereum/contract
     name: OmnuumWallet
     network: rinkeby
     source:
-      startBlock: 10351405
-      address: "0x973DCf54b83A5DB8761A4DaC364D0F28f8728459"
+      startBlock: 10352223
+      address: "0x46Fe234240C6310D5efE00Db01ac3768166bA565"
       abi: OmnuumWallet
     mapping:
       file: ./src/mappings/wallet.ts
@@ -35,12 +36,13 @@ dataSources:
           handler: handleRevoked
         - event: Withdrawn(indexed uint256,indexed address,uint256)
           handler: handleWithdrawn
+
   - kind: ethereum/contract
     name: OmnuumCAManager
     network: rinkeby
     source:
-      startBlock: 10351393
-      address: "0x3cc46693C1Bb29cB3029B4a101bD3EF80f9e9F48"
+      startBlock: 10352212
+      address: "0x0A81832A3B2dc616e5Aa7c08c68F1d6c55DA9651"
       abi: OmnuumCAManager
     mapping:
       file: ./src/mappings/caManager.ts
@@ -48,7 +50,6 @@ dataSources:
       apiVersion: 0.0.5
       language: wasm/assemblyscript
       entities:
-        - Transaction
         - Contract
       abis:
         - name: OmnuumCAManager
@@ -60,6 +61,7 @@ dataSources:
           handler: handleManagerContractRegistered
         - event: ManagerContractRemoved(address,bytes32)
           handler: handleManagerContractRemoved
+
 templates:
   - kind: ethereum/contract
     name: OmnuumNFT1155
@@ -72,12 +74,20 @@ templates:
       language: wasm/assemblyscript
       file: ./src/mappings/nft1155.ts
       entities:
-        - Transaction
-        - Contract
         - Mint
       abis:
         - name: OmnuumNFT1155
           file: ./abis/OmnuumNFT1155.json
+        - name: BeaconProxy
+          file: ./abis/openzeppelin/BeaconProxy.json
+        - name: ERC165Upgradeable
+          file: ./abis/openzeppelin/ERC165Upgradeable.json
+        - name: ERC1155Upgradeable
+          file: ./abis/openzeppelin/ERC1155Upgradeable.json
+        - name: ERC1967Upgrade
+          file: ./abis/openzeppelin/ERC1967Upgrade.json
+        - name: IBeacon
+          file: ./abis/openzeppelin/IBeacon.json
       eventHandlers:
         - event: TransferSingle(indexed address,indexed address,indexed address,uint256,uint256)
           handler: handleTransferSingle
