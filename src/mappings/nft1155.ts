@@ -1,5 +1,5 @@
 import { OwnershipTransferred, TransferSingle, Uri } from '../types/templates/OmnuumNFT1155/OmnuumNFT1155';
-import { Contract, Mint } from '../types/schema';
+import { Contract, NFT } from '../types/schema';
 import { saveTransaction, getEventName, EventName } from '../utils';
 import { log } from '@graphprotocol/graph-ts';
 
@@ -16,19 +16,19 @@ export function handleTransferSingle(event: TransferSingle): void {
     minter.toHexString(),
   ]);
 
-  let mintEntity = Mint.load(id);
-  if (!mintEntity) {
-    mintEntity = new Mint(id);
+  let nftEntity = NFT.load(id);
+  if (!nftEntity) {
+    nftEntity = new NFT(id);
   }
 
   const transaction = saveTransaction(event, getEventName(EventName.TransferSingle));
 
-  mintEntity.blockNumber = event.block.number;
-  mintEntity.contract = nftContractAddress;
-  mintEntity.minter = minter;
-  mintEntity.tokenId = tokenId;
-  mintEntity.mint_transaction = transaction.id;
-  mintEntity.save();
+  nftEntity.blockNumber = event.block.number;
+  nftEntity.contract = nftContractAddress;
+  nftEntity.minter = minter;
+  nftEntity.tokenId = tokenId;
+  nftEntity.mint_transaction = transaction.id;
+  nftEntity.save();
 }
 
 export function handleUri(event: Uri): void {
@@ -38,7 +38,7 @@ export function handleUri(event: Uri): void {
 
   if (contractEntity) {
     contractEntity.blockNumber = event.block.number;
-    contractEntity.is_removed = true;
+    contractEntity.is_revealed = true;
     contractEntity.reveal_url = event.params.uri;
     contractEntity.save();
   }

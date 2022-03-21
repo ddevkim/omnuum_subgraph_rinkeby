@@ -3,14 +3,14 @@ description: A protocol for NFT minting
 repository: https://github.com/ddevkim/omnuum_subgraph_rinkeby
 schema:
   file: ./schema.graphql
-
 dataSources:
   - kind: ethereum/contract
     name: OmnuumWallet
     network: rinkeby
     source:
-      startBlock: 10352223
-      address: "0x46Fe234240C6310D5efE00Db01ac3768166bA565"
+      startBlock: 10364124
+      # wallet
+      address: "0xb1ed95A0B951a93052a86A575CA77D346c04596c"
       abi: OmnuumWallet
     mapping:
       file: ./src/mappings/wallet.ts
@@ -26,8 +26,10 @@ dataSources:
         - name: OmnuumWallet
           file: ./abis/OmnuumWallet.json
       eventHandlers:
-        - event: FeeReceived(indexed address,indexed address,uint256)
-          handler: handleFeeReceived
+        - event: EtherReceived()
+          handler: handleEtherReceived
+        - event: PaymentReceived(bytes32,string)
+          handler: handlePaymentReceived
         - event: Requested(indexed uint256,indexed address,uint256)
           handler: handleRequested
         - event: Approved(indexed uint256,indexed address)
@@ -41,8 +43,9 @@ dataSources:
     name: OmnuumCAManager
     network: rinkeby
     source:
-      startBlock: 10352212
-      address: "0x0A81832A3B2dc616e5Aa7c08c68F1d6c55DA9651"
+      startBlock: 10364114
+      # CA Manager
+      address: "0xf2fa8ED3240A747Fc709EEB66997602C769764C4"
       abi: OmnuumCAManager
     mapping:
       file: ./src/mappings/caManager.ts
@@ -50,6 +53,7 @@ dataSources:
       apiVersion: 0.0.5
       language: wasm/assemblyscript
       entities:
+        - Transaction
         - Contract
       abis:
         - name: OmnuumCAManager
@@ -61,6 +65,52 @@ dataSources:
           handler: handleManagerContractRegistered
         - event: ManagerContractRemoved(address,bytes32)
           handler: handleManagerContractRemoved
+
+  - kind: ethereum/contract
+    name: TicketManager
+    network: rinkeby
+    source:
+      startBlock: 10364120
+      # ticket manager
+      address: "0xf6799b2d43D7AEa054070DbecdE8b7635b0ea2b1"
+      abi: TicketManager
+    mapping:
+      file: ./src/mappings/ticketManager.ts
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Transaction
+        - MintSchedule
+      abis:
+        - name: TicketManager
+          file: ./abis/TicketManager.json
+      eventHandlers:
+        - event: SetTicketSchedule(indexed address,indexed uint256,uint256)
+          handler: handleSetTicketSchedule
+
+  - kind: ethereum/contract
+    name: OmnuumMintManager
+    network: rinkeby
+    source:
+      startBlock: 10364117
+      # mint manager
+      address: "0xbEABb951C3dE5bFc2AaECBdedc90e275c147967e"
+      abi: OmnuumMintManager
+    mapping:
+      file: ./src/mappings/mintManager.ts
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Transaction
+        - MintSchedule
+      abis:
+        - name: OmnuumMintManager
+          file: ./abis/OmnuumMintManager.json
+      eventHandlers:
+        - event: SetPublicSchedule(indexed address,indexed uint256,uint256)
+          handler: handleSetPublicSchedule
 
 templates:
   - kind: ethereum/contract
@@ -74,6 +124,7 @@ templates:
       language: wasm/assemblyscript
       file: ./src/mappings/nft1155.ts
       entities:
+        - Transaction
         - Mint
       abis:
         - name: OmnuumNFT1155

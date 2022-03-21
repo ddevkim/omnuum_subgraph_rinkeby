@@ -1,8 +1,8 @@
 import { BigInt, log } from '@graphprotocol/graph-ts';
-import { Approved, FeeReceived, Requested, Revoked, Withdrawn } from '../types/OmnuumWallet/OmnuumWallet';
+import { Approved, PaymentReceived, Requested, Revoked, Withdrawn } from '../types/OmnuumWallet/OmnuumWallet';
 import { Approval, Fee, Request } from '../types/schema';
 
-import { getEventName, saveTransaction, EventName } from '../utils';
+import { getEventName, saveTransaction, EventName, convertFeeTopicHashToString } from '../utils';
 
 /*
     @ Table: Request
@@ -47,7 +47,7 @@ export function handleApproved(event: Approved): void {
   approvalEntity.approver = owner;
   approvalEntity.is_last_approval_revoked = false;
 
-  let approval_transactions = approvalEntity.approval_transactions;
+  const approval_transactions = approvalEntity.approval_transactions;
 
   if (!approval_transactions) {
     log.debug('APPROVAL_____COUNT___NO_LENGTH', []);
@@ -87,7 +87,7 @@ export function handleRevoked(event: Revoked): void {
     // Update revoke boolean
     approvalEntity.is_last_approval_revoked = true;
 
-    let revoked_transactions = approvalEntity.revoked_transactions;
+    const revoked_transactions = approvalEntity.revoked_transactions;
 
     if (!revoked_transactions) {
       // Insert revoked transaction
@@ -128,20 +128,25 @@ export function handleWithdrawn(event: Withdrawn): void {
   }
 }
 
-export function handleFeeReceived(event: FeeReceived): void {
-  const transaction = saveTransaction(event, getEventName(EventName.FeeReceived));
-  const id = transaction.id; // transaction hash
-  const sender = event.params.sender;
+export function handlePaymentReceived(event: PaymentReceived): void {
+  const transaction = saveTransaction(event, getEventName(EventName.PaymentReceived));
+  const id = `${transaction.id}_${event.logIndex}`; // transaction hash
+  const sender = event.transaction.from;
 
-  log.info('___LOG handleWithdrawn tx_id: {} sender: {}', [id, sender.toHexString()]);
+  log.info('___LOG handlePaymentReceived tx_id: {} sender: {}', [id, sender.toHexString()]);
 
   let feeEntity = Fee.load(id);
   if (!feeEntity) {
     feeEntity = new Fee(id);
   }
 
+  feeEntity.blockNumber = event.block.number;
+  feeEntity.fee_transaction = transaction.id;
   feeEntity.sender = sender;
-  feeEntity.fee_transaction = id;
+  feeEntity.value = event.transaction.value;
+
+  feeEntity.topic = convertFeeTopicHashToString(event.params.topic.toHexString());
+  feeEntity.description = event.params.description;
 
   feeEntity.save();
 }

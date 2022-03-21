@@ -6,7 +6,7 @@ import {
 } from '../types/OmnuumCAManager/OmnuumCAManager';
 
 import { Contract } from '../types/schema';
-import { OmnuumNFT1155 } from '../types/templates';
+import { OmnuumNFT1155 as NftTemplate } from '../types/templates';
 import { OmnuumNFT1155 as NftContract } from '../types/templates/OmnuumNFT1155/OmnuumNFT1155';
 import {
   getEventName,
@@ -18,30 +18,31 @@ import {
 } from '../utils';
 
 export function handleNftContractRegistered(event: NftContractRegistered): void {
-  const id = event.params.nftContract.toHexString();
+  const nftAddress = event.params.nftContract;
+  const id = nftAddress.toHexString();
   const contractTopic = getContractTopicFromString(ContractTopic.NFT);
 
   log.info('___LOG handleNftContractRegistered id: {} topic: {}', [id, contractTopic]);
 
-  OmnuumNFT1155.create(event.params.nftContract);
-
   let contractEntity = Contract.load(id);
   if (!contractEntity) {
+    log.debug('___LOGGER nft_template_creation nftAddress: {}', [id]);
     contractEntity = new Contract(id);
+    NftTemplate.create(nftAddress);
+  } else {
+    log.debug('___LOGGER nft_template_duplication nftAddress: {}', [id]);
   }
 
   const transaction = saveTransaction(event, getEventName(EventName.NftContractRegistered), contractTopic);
-
-  log.debug('___LOG nftContractBinding nftContractAddress: {}', [event.params.nftContract.toHexString()]);
-  const nftContract = NftContract.bind(event.params.nftContract);
-  log.debug('___LOG nftContractBinded nftContractAddress: {}', [event.params.nftContract.toHexString()]);
 
   contractEntity.blockNumber = event.block.number;
   contractEntity.register_transaction = transaction.id;
   contractEntity.owner = event.params.nftOwner;
   contractEntity.topic = contractTopic;
   contractEntity.is_removed = false;
+  contractEntity.save();
 
+  // const nftContract = NftContract.bind(event.params.nftContract);
   // let maxSupplyResult = nftContract.try_maxSupply();
   // if (maxSupplyResult.reverted) {
   //   log.debug('maxSupply reverted', []);
@@ -62,8 +63,6 @@ export function handleNftContractRegistered(event: NftContractRegistered): void 
   // } else {
   //   contractEntity.cover_url = coverUriResult.value;
   // }
-
-  contractEntity.save();
 }
 
 export function handleManagerContractRegistered(event: ManagerContractRegistered): void {
@@ -97,7 +96,7 @@ export function handleManagerContractRemoved(event: ManagerContractRemoved): voi
 
   log.info('___LOG handleManagerContractRemoved id: {}', [id]);
 
-  let contractEntity = Contract.load(id);
+  const contractEntity = Contract.load(id);
 
   const transaction = saveTransaction(event, getEventName(EventName.ManagerContractRemoved));
 

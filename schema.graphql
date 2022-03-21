@@ -1,52 +1,6 @@
-
-type Transaction @entity {
-  id: ID! #transactionHash
-  blockNumber: BigInt!
-  eventSelectors: [String!]!
-  from: Bytes!
-  to: Bytes
-  gasUsed: BigInt!
-  value: BigInt!
-  timestamp: BigInt!
-  gasPrice: BigInt!
-  "Derived Values"
-  requests: [Request!] @derivedFrom(field: "request_transaction")
-  approvals: [Approval!] @derivedFrom(field: "approval_transactions")
-  fees: [Fee!] @derivedFrom(field: "fee_transaction")
-  contracts: [Contract!] @derivedFrom(field: "register_transaction")
-  mints: [Mint!] @derivedFrom(field: "mint_transaction")
-}
-
-type Request @entity {
-  "MAIN EVENTs FOR WALLET"
-  id: ID!  #reqId
-  blockNumber: BigInt!
-  requester: Bytes! #msg.sender
-  request_value: BigInt!
-  withdrawal_value: BigInt!
-  approval_count: BigInt!
-  request_transaction: Transaction!
-  withdrawal_transaction: Transaction
-}
-
-type Approval @entity {
-  "MAIN EVENTs FOR WALLET"
-  id: ID! #reqId + approverAddress
-  blockNumber: BigInt!
-  approver: Bytes!
-  is_last_approval_revoked: Boolean
-  revoked_transactions: [Transaction!]
-  approval_transactions: [Transaction!]!
-  request_id: Request!
-}
-
-# id : transactionHash
-type Fee @entity {
-  "MAIN EVENTs FOR WALLET"
-  id: ID! #transactionHash
-  blockNumber: BigInt!
-  sender: Bytes! #msg.sender
-  fee_transaction: Transaction!
+enum WalletTopic {
+  DEPLOY
+  UNRECOGNIZED
 }
 
 enum ContractTopic {
@@ -62,9 +16,64 @@ enum ContractTopic {
   UNRECOGNIZED
 }
 
+
+type Transaction @entity {
+  id: ID! #transactionHash
+  blockNumber: BigInt!
+  eventSelectors: [String!]!
+  from: Bytes!
+  to: Bytes
+  gasUsed: BigInt!
+  value: BigInt!
+  timestamp: BigInt!
+  gasPrice: BigInt!
+
+  "Derived Values"
+  requests: [Request!] @derivedFrom(field: "request_transaction")
+  approvals: [Approval!] @derivedFrom(field: "approval_transactions")
+  fees: [Fee!] @derivedFrom(field: "fee_transaction")
+  contracts: [Contract!] @derivedFrom(field: "register_transaction")
+  nfts: [NFT!] @derivedFrom(field: "mint_transaction")
+}
+
+type Request @entity {
+  "MAIN EVENTs FOR WALLET"
+  id: ID!  #reqId
+  blockNumber: BigInt!
+  request_transaction: Transaction!
+  withdrawal_transaction: Transaction
+  requester: Bytes! #msg.sender
+  request_value: BigInt!
+  withdrawal_value: BigInt!
+  approval_count: BigInt!
+}
+
+type Approval @entity {
+  "MAIN EVENTs FOR WALLET"
+  id: ID! #reqId + approverAddress
+  blockNumber: BigInt!
+  revoked_transactions: [Transaction!]
+  approval_transactions: [Transaction!]!
+  approver: Bytes!
+  is_last_approval_revoked: Boolean
+  request_id: Request!
+}
+
+# id : transactionHash
+type Fee @entity {
+  "MAIN EVENTs FOR WALLET"
+  id: ID! #transactionHash + logIndex
+  blockNumber: BigInt!
+  fee_transaction: Transaction!
+  sender: Bytes! #msg.sender
+  value: BigInt! #msg.value
+  topic: WalletTopic
+  description: String
+}
+
 type Contract @entity {
   "MAIN EVENTs FOR CA_MANAGER"
-  id: ID! #nft contract address
+  id: ID! #contract address
   blockNumber: BigInt!
   register_transaction: Transaction!
   remove_transaction: Transaction
@@ -77,12 +86,24 @@ type Contract @entity {
   reveal_url: String
 }
 
-type Mint @entity {
+type NFT @entity {
   "MAIN EVENTs FOR NFT_PROJECTs"
-  id: ID! # contractAddress + tokenId
+  id: ID! # nftContractAddress + tokenId
   blockNumber: BigInt!
+  mint_transaction: Transaction!
   contract: Contract!
   minter: Bytes!
   tokenId: BigInt!
-  mint_transaction: Transaction!
+}
+
+type MintSchedule @entity {
+  "EVENTs from  TicketManager(pre-sale) & MintManager(public-sale)"
+  id: ID! # nftContractAddress + scheduleGroupId
+  blockNumber: BigInt!
+  mint_schedule_transaction: Transaction!
+  contract: Contract!
+  groupId: BigInt!
+  endDate: BigInt!
+  topic: String!
+  mintedTotal: BigInt
 }

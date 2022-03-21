@@ -69,6 +69,15 @@ export function getUniqueIdFromTxLog(event: ethereum.Event): string {
   return `${trxHash}_${logIndex}`;
 }
 
+export function convertFeeTopicHashToString(topicHashStr: string): string {
+  if (crypto.keccak256(ByteArray.fromUTF8('DEPLOY')).toHexString() == topicHashStr) {
+    log.debug('KECCAK___RESULT NFT {}', [crypto.keccak256(ByteArray.fromUTF8('DEPLOY')).toHexString()]);
+    return 'DEPLOY';
+  } else {
+    return 'UNRECOGNIZED';
+  }
+}
+
 export function convertContractTopicHashToString(topicHashStr: string): string {
   if (crypto.keccak256(ByteArray.fromUTF8('NFT')).toHexString() == topicHashStr) {
     log.debug('KECCAK___RESULT NFT {}', [crypto.keccak256(ByteArray.fromUTF8('NFT')).toHexString()]);
@@ -119,12 +128,15 @@ export enum EventName {
   Approved,
   Revoked,
   Withdrawn,
-  FeeReceived,
+  PaymentReceived,
+  EtherReceived,
   NftContractRegistered,
   ManagerContractRegistered,
   ManagerContractRemoved,
   TransferSingle,
   Uri,
+  SetTicketSchedule,
+  SetPublicSchedule,
 }
 
 export function getContractTopicFromString(contractTopic: ContractTopic): string {
@@ -162,8 +174,10 @@ export function getEventName(eventName: EventName): string {
       return 'Revoked';
     case EventName.Withdrawn:
       return 'Withdrawn';
-    case EventName.FeeReceived:
-      return 'FeeReceived';
+    case EventName.PaymentReceived:
+      return 'PaymentReceived';
+    case EventName.EtherReceived:
+      return 'EtherReceived';
     case EventName.NftContractRegistered:
       return 'NftContractRegistered';
     case EventName.ManagerContractRegistered:
@@ -172,6 +186,11 @@ export function getEventName(eventName: EventName): string {
       return 'ManagerContractRemoved';
     case EventName.Uri:
       return 'Uri';
+    case EventName.SetTicketSchedule:
+      return 'SetTicketSchedule';
+    case EventName.SetPublicSchedule:
+      return 'SetPublicSchedule';
+
     default:
       return 'undefined';
   }

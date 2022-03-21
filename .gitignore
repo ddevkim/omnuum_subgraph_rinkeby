@@ -5,3 +5,5 @@ src/types/
 .DS_STORE
 yarn-error.log
 contracts/
+
+.postgres/

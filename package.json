@@ -6,10 +6,11 @@
   "scripts": {
     "codegen": "graph codegen --output-dir src/types/",
     "build": "graph codegen --output-dir src/types/ && graph build",
-    "deploy:testnet1": "graph codegen --output-dir src/types/ && graph build && graph deploy --studio om_rinkeby_test_v1",
-    "deploy:testnet2": "graph codegen --output-dir src/types/ && graph build && graph deploy --studio om_rinkeby_test_v2",
-    "deploy:host_rinkeby": "graph codegen --output-dir src/types/ && graph build && graph deploy --product hosted-service ddevkim/omnuum-rinkeby",
-    "deploy:host_ropsten": "graph codegen --output-dir src/types/ && graph build &&graph deploy --product hosted-service ddevkim/omnuum-ropsten-v1",
+    "deploy:testnet:v1": "graph codegen --output-dir src/types/ && graph build && graph deploy --studio om_rinkeby_test_v1",
+    "deploy:testnet:v2": "graph codegen --output-dir src/types/ && graph build && graph deploy --studio om_rinkeby_test_v2",
+    "deploy:testnet:v3": "graph codegen --output-dir src/types/ && graph build && graph deploy --studio om_rinkeby_test_v3",
+    "deploy:hosting:rinkeby": "graph codegen --output-dir src/types/ && graph build && graph deploy --product hosted-service ddevkim/omnuum-rinkeby",
+    "deploy:hosting:ropsten": "graph codegen --output-dir src/types/ && graph build &&graph deploy --product hosted-service ddevkim/omnuum-ropsten-v1",
     "create-local": "graph create --node http://localhost:8020/ om_wallet",
     "remove-local": "graph remove --node http://localhost:8020/ om_wallet",
     "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 om_wallet"
@@ -17,11 +18,13 @@
   "dependencies": {
     "@graphprotocol/graph-cli": "^0.28.1",
     "@graphprotocol/graph-ts": "0.26.0",
-    "@openzeppelin/subgraphs": "^0.1.7-1"
+    "@openzeppelin/subgraphs": "^0.1.7-1",
+    "@typescript-eslint/eslint-plugin": "^5.15.0",
+    "@typescript-eslint/parser": "^5.15.0",
+    "eslint": "^8.11.0",
+    "typescript": "^4.6.2"
   },
   "devDependencies": {
-    "eslint": "^8.11.0",
-    "prettier": "^2.5.1",
-    "typescript": "^4.6.2"
+    "prettier": "^2.5.1"
   }
 }
