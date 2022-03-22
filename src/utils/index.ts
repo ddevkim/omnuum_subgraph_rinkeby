@@ -28,29 +28,29 @@ export function saveTransaction(event: ethereum.Event, eventName: string, contra
     // if not exist transaction => create transaction row
     log.info('___LOG INSERT TRANSACTION {} {}', [event.transaction.hash.toHexString(), eventSelector]);
     transaction = new Transaction(event.transaction.hash.toHexString());
-    transaction.blockNumber = event.block.number;
-    transaction.eventSelectors = [eventSelector];
+    transaction.block_number = event.block.number;
+    transaction.event_selectors = [eventSelector];
     transaction.from = event.transaction.from;
     transaction.to = event.transaction.to!;
-    transaction.gasUsed = event.block.gasUsed;
+    transaction.gas_used = event.block.gasUsed;
     transaction.value = event.transaction.value;
     transaction.timestamp = event.block.timestamp;
-    transaction.gasPrice = event.transaction.gasPrice;
+    transaction.gas_price = event.transaction.gasPrice;
     transaction.save();
   } else {
     // if previous exists transaction in case of a transaction contains multiple events,
     // push eventSelector to eventSelectors array to keep tracking all the multiple events
-    if (!transaction.eventSelectors.includes(eventSelector)) {
+    if (!transaction.event_selectors.includes(eventSelector)) {
       log.info('___LOG PUSH EVENTS at the SAME TRANSACTION {} {}', [
         event.transaction.hash.toHexString(),
         eventSelector,
       ]);
       // if the same events emitted in the same transaction, just ignore it avoid duplication
-      transaction.blockNumber = event.block.number;
+      transaction.block_number = event.block.number;
       transaction.timestamp = event.block.timestamp;
-      const eventSelectors = transaction.eventSelectors;
+      const eventSelectors = transaction.event_selectors;
       eventSelectors.push(eventSelector);
-      transaction.eventSelectors = eventSelectors;
+      transaction.event_selectors = eventSelectors;
       transaction.save();
     } else {
       log.info('___LOG DUPLICATE EVENTS at the SAME TRANSACTION {} {}', [
@@ -70,9 +70,10 @@ export function getUniqueIdFromTxLog(event: ethereum.Event): string {
 }
 
 export function convertFeeTopicHashToString(topicHashStr: string): string {
-  if (crypto.keccak256(ByteArray.fromUTF8('DEPLOY')).toHexString() == topicHashStr) {
-    log.debug('KECCAK___RESULT NFT {}', [crypto.keccak256(ByteArray.fromUTF8('DEPLOY')).toHexString()]);
-    return 'DEPLOY';
+  if (crypto.keccak256(ByteArray.fromUTF8('DEPLOY_FEE')).toHexString() == topicHashStr) {
+    return 'DEPLOY_FEE';
+  } else if (crypto.keccak256(ByteArray.fromUTF8('MINT_FEE')).toHexString() == topicHashStr) {
+    return 'MINT_FEE';
   } else {
     return 'UNRECOGNIZED';
   }
@@ -137,6 +138,8 @@ export enum EventName {
   Uri,
   SetTicketSchedule,
   SetPublicSchedule,
+  TicketMint,
+  PublicMint,
 }
 
 export function getContractTopicFromString(contractTopic: ContractTopic): string {
@@ -186,11 +189,16 @@ export function getEventName(eventName: EventName): string {
       return 'ManagerContractRemoved';
     case EventName.Uri:
       return 'Uri';
+    case EventName.TransferSingle:
+      return 'TransferSingle';
     case EventName.SetTicketSchedule:
       return 'SetTicketSchedule';
     case EventName.SetPublicSchedule:
       return 'SetPublicSchedule';
-
+    case EventName.TicketMint:
+      return 'TicketMint';
+    case EventName.PublicMint:
+      return 'PublicMint';
     default:
       return 'undefined';
   }

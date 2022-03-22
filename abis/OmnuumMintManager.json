@@ -145,6 +145,24 @@
         "internalType": "uint256",
         "name": "endDate",
         "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "basePrice",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint32",
+        "name": "supply",
+        "type": "uint32"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint32",
+        "name": "maxMintAtAddress",
+        "type": "uint32"
       }
     ],
     "name": "SetPublicSchedule",
@@ -235,7 +253,7 @@
       },
       {
         "internalType": "uint16[]",
-        "name": "_quantitys",
+        "name": "_quantities",
         "type": "uint16[]"
       }
     ],

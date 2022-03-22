@@ -1,5 +1,6 @@
 enum WalletTopic {
-  DEPLOY
+  DEPLOY_FEE
+  MINT_FEE
   UNRECOGNIZED
 }
 
@@ -18,28 +19,31 @@ enum ContractTopic {
 
 
 type Transaction @entity {
-  id: ID! #transactionHash
-  blockNumber: BigInt!
-  eventSelectors: [String!]!
+  "id: transactionHash(hex)"
+  id: ID!
+  block_number: BigInt!
+  event_selectors: [String!]!
   from: Bytes!
   to: Bytes
-  gasUsed: BigInt!
+  gas_used: BigInt!
   value: BigInt!
   timestamp: BigInt!
-  gasPrice: BigInt!
+  gas_price: BigInt!
 
   "Derived Values"
   requests: [Request!] @derivedFrom(field: "request_transaction")
   approvals: [Approval!] @derivedFrom(field: "approval_transactions")
   fees: [Fee!] @derivedFrom(field: "fee_transaction")
   contracts: [Contract!] @derivedFrom(field: "register_transaction")
-  nfts: [NFT!] @derivedFrom(field: "mint_transaction")
+  nfts: [Nft!] @derivedFrom(field: "nft_transaction")
+  mintSchedules: [MintSchedule!] @derivedFrom(field: "mint_schedule_transaction")
+  mints: [Mint!] @derivedFrom(field: "mint_transaction")
 }
 
 type Request @entity {
   "MAIN EVENTs FOR WALLET"
-  id: ID!  #reqId
-  blockNumber: BigInt!
+  id: ID!"reqId(hex)"
+  block_number: BigInt!
   request_transaction: Transaction!
   withdrawal_transaction: Transaction
   requester: Bytes! #msg.sender
@@ -49,9 +53,9 @@ type Request @entity {
 }
 
 type Approval @entity {
-  "MAIN EVENTs FOR WALLET"
-  id: ID! #reqId + approverAddress
-  blockNumber: BigInt!
+  "id: reqId(hex)_approverAddress(hex)"
+  id: ID!
+  block_number: BigInt!
   revoked_transactions: [Transaction!]
   approval_transactions: [Transaction!]!
   approver: Bytes!
@@ -61,9 +65,9 @@ type Approval @entity {
 
 # id : transactionHash
 type Fee @entity {
-  "MAIN EVENTs FOR WALLET"
-  id: ID! #transactionHash + logIndex
-  blockNumber: BigInt!
+  "id: transactionHash(hex)_logIndex(hex)"
+  id: ID!
+  block_number: BigInt!
   fee_transaction: Transaction!
   sender: Bytes! #msg.sender
   value: BigInt! #msg.value
@@ -72,9 +76,9 @@ type Fee @entity {
 }
 
 type Contract @entity {
-  "MAIN EVENTs FOR CA_MANAGER"
-  id: ID! #contract address
-  blockNumber: BigInt!
+  "id: contractAddress(hex)"
+  id: ID!
+  block_number: BigInt!
   register_transaction: Transaction!
   remove_transaction: Transaction
   owner: Bytes!
@@ -86,24 +90,39 @@ type Contract @entity {
   reveal_url: String
 }
 
-type NFT @entity {
-  "MAIN EVENTs FOR NFT_PROJECTs"
-  id: ID! # nftContractAddress + tokenId
-  blockNumber: BigInt!
-  mint_transaction: Transaction!
-  contract: Contract!
+type Nft @entity {
+  "id: nftContractAddress(hex)_tokenId(hex)"
+  id: ID!
+  block_number: BigInt!
+  nft_transaction: Transaction!
+  nft_contract: Contract!
   minter: Bytes!
-  tokenId: BigInt!
+  token_id: BigInt!
 }
 
 type MintSchedule @entity {
-  "EVENTs from  TicketManager(pre-sale) & MintManager(public-sale)"
-  id: ID! # nftContractAddress + scheduleGroupId
-  blockNumber: BigInt!
+  "id: nftContractAddress(hex)_scheduleGroupId(hex)"
+  id: ID!
+  block_number: BigInt!
   mint_schedule_transaction: Transaction!
-  contract: Contract!
-  groupId: BigInt!
-  endDate: BigInt!
+  nft_contract: Contract!
   topic: String!
-  mintedTotal: BigInt
+  group_id: BigInt!
+  end_date: BigInt!
+  base_price: BigInt
+  mint_supply: BigInt
+  max_qty_per_address: BigInt
+}
+
+type Mint @entity {
+  "id: transactionHash(hex)_logIndex(hex)"
+  id: ID!
+  block_number: BigInt!
+  mint_transaction: Transaction!
+  nft_contract: Contract!
+  mint_schedule: MintSchedule!
+  minter: Bytes!
+  mint_quantity: BigInt!
+  max_quantity: BigInt
+  price: BigInt
 }

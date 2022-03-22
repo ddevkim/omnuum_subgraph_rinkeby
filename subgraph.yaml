@@ -8,9 +8,9 @@ dataSources:
     name: OmnuumWallet
     network: rinkeby
     source:
-      startBlock: 10364124
+      startBlock: 10366469
       # wallet
-      address: "0xb1ed95A0B951a93052a86A575CA77D346c04596c"
+      address: "0xd4A70F371A636B3a7484c224043c7Fcad73e453F"
       abi: OmnuumWallet
     mapping:
       file: ./src/mappings/wallet.ts
@@ -43,9 +43,9 @@ dataSources:
     name: OmnuumCAManager
     network: rinkeby
     source:
-      startBlock: 10364114
+      startBlock: 10366457
       # CA Manager
-      address: "0xf2fa8ED3240A747Fc709EEB66997602C769764C4"
+      address: "0x61442A79F28883f56F824108416A22C7aeAda224"
       abi: OmnuumCAManager
     mapping:
       file: ./src/mappings/caManager.ts
@@ -70,9 +70,9 @@ dataSources:
     name: TicketManager
     network: rinkeby
     source:
-      startBlock: 10364120
+      startBlock: 10366464
       # ticket manager
-      address: "0xf6799b2d43D7AEa054070DbecdE8b7635b0ea2b1"
+      address: "0xC655884C2A9e8a917587955dcF2D4151f7e51cF1"
       abi: TicketManager
     mapping:
       file: ./src/mappings/ticketManager.ts
@@ -88,14 +88,16 @@ dataSources:
       eventHandlers:
         - event: SetTicketSchedule(indexed address,indexed uint256,uint256)
           handler: handleSetTicketSchedule
+        - event: TicketMint(indexed address,indexed address,indexed uint256,uint32,uint32,uint256)
+          handler: handlerTicketMint
 
   - kind: ethereum/contract
     name: OmnuumMintManager
     network: rinkeby
     source:
-      startBlock: 10364117
+      startBlock: 10366461
       # mint manager
-      address: "0xbEABb951C3dE5bFc2AaECBdedc90e275c147967e"
+      address: "0x9996aB617Dd8015eE8d463Dc5Ad1EFbF79040A1E"
       abi: OmnuumMintManager
     mapping:
       file: ./src/mappings/mintManager.ts
@@ -109,8 +111,10 @@ dataSources:
         - name: OmnuumMintManager
           file: ./abis/OmnuumMintManager.json
       eventHandlers:
-        - event: SetPublicSchedule(indexed address,indexed uint256,uint256)
+        - event: SetPublicSchedule(indexed address,indexed uint256,uint256,uint256,uint32,uint32)
           handler: handleSetPublicSchedule
+        - event: PublicMint(indexed address,indexed address,indexed uint256,uint32,uint32,uint256)
+          handler: handlerPublicMint
 
 templates:
   - kind: ethereum/contract

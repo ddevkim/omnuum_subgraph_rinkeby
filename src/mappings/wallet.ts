@@ -2,7 +2,7 @@ import { BigInt, log } from '@graphprotocol/graph-ts';
 import { Approved, PaymentReceived, Requested, Revoked, Withdrawn } from '../types/OmnuumWallet/OmnuumWallet';
 import { Approval, Fee, Request } from '../types/schema';
 
-import { getEventName, saveTransaction, EventName, convertFeeTopicHashToString } from '../utils';
+import { getEventName, saveTransaction, EventName, convertFeeTopicHashToString, getUniqueIdFromTxLog } from '../utils';
 
 /*
     @ Table: Request
@@ -21,7 +21,7 @@ export function handleRequested(event: Requested): void {
     requestEntity = new Request(id);
   }
 
-  requestEntity.blockNumber = event.block.number;
+  requestEntity.block_number = event.block.number;
   requestEntity.requester = event.params.requester;
   requestEntity.request_value = event.params.withdrawalValue;
   requestEntity.withdrawal_value = BigInt.zero();
@@ -130,7 +130,7 @@ export function handleWithdrawn(event: Withdrawn): void {
 
 export function handlePaymentReceived(event: PaymentReceived): void {
   const transaction = saveTransaction(event, getEventName(EventName.PaymentReceived));
-  const id = `${transaction.id}_${event.logIndex}`; // transaction hash
+  const id = getUniqueIdFromTxLog(event); // transaction hash
   const sender = event.transaction.from;
 
   log.info('___LOG handlePaymentReceived tx_id: {} sender: {}', [id, sender.toHexString()]);
@@ -140,7 +140,7 @@ export function handlePaymentReceived(event: PaymentReceived): void {
     feeEntity = new Fee(id);
   }
 
-  feeEntity.blockNumber = event.block.number;
+  feeEntity.block_number = event.block.number;
   feeEntity.fee_transaction = transaction.id;
   feeEntity.sender = sender;
   feeEntity.value = event.transaction.value;

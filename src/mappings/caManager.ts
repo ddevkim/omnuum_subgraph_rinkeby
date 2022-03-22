@@ -33,9 +33,9 @@ export function handleNftContractRegistered(event: NftContractRegistered): void 
     log.debug('___LOGGER nft_template_duplication nftAddress: {}', [id]);
   }
 
-  const transaction = saveTransaction(event, getEventName(EventName.NftContractRegistered), contractTopic);
+  const transaction = saveTransaction(event, getEventName(EventName.NftContractRegistered));
 
-  contractEntity.blockNumber = event.block.number;
+  contractEntity.block_number = event.block.number;
   contractEntity.register_transaction = transaction.id;
   contractEntity.owner = event.params.nftOwner;
   contractEntity.topic = contractTopic;
@@ -43,26 +43,29 @@ export function handleNftContractRegistered(event: NftContractRegistered): void 
   contractEntity.save();
 
   // const nftContract = NftContract.bind(event.params.nftContract);
-  // let maxSupplyResult = nftContract.try_maxSupply();
+  // log.debug('___LOGGER NftContract_binding nftAddress: {}', [event.params.nftContract.toHexString()]);
+  //
+  // const maxSupplyResult = nftContract.try_maxSupply();
   // if (maxSupplyResult.reverted) {
   //   log.debug('maxSupply reverted', []);
   // } else {
   //   contractEntity.max_supply = maxSupplyResult.value;
   // }
   //
-  // let isRevealedResult = nftContract.try_isRevealed();
+  // const isRevealedResult = nftContract.try_isRevealed();
   // if (isRevealedResult.reverted) {
   //   log.debug('is_revealed reverted', []);
   // } else {
   //   contractEntity.is_revealed = isRevealedResult.value;
   // }
   //
-  // let coverUriResult = nftContract.try_coverUri();
+  // const coverUriResult = nftContract.try_coverUri();
   // if (coverUriResult.reverted) {
   //   log.debug('coverUri reverted', []);
   // } else {
   //   contractEntity.cover_url = coverUriResult.value;
   // }
+  // contractEntity.save();
 }
 
 export function handleManagerContractRegistered(event: ManagerContractRegistered): void {
@@ -82,7 +85,7 @@ export function handleManagerContractRegistered(event: ManagerContractRegistered
     contractTopic === 'CAMANAGER' ? contractTopic : ''
   );
 
-  contractEntity.blockNumber = event.block.number;
+  contractEntity.block_number = event.block.number;
   contractEntity.register_transaction = transaction.id;
   contractEntity.owner = event.transaction.from;
   contractEntity.topic = contractTopic;
@@ -101,7 +104,7 @@ export function handleManagerContractRemoved(event: ManagerContractRemoved): voi
   const transaction = saveTransaction(event, getEventName(EventName.ManagerContractRemoved));
 
   if (contractEntity) {
-    contractEntity.blockNumber = event.block.number;
+    contractEntity.block_number = event.block.number;
     contractEntity.remove_transaction = transaction.id;
     contractEntity.is_removed = true;
     contractEntity.save();
