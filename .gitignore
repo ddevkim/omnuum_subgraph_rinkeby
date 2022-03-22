@@ -1,4 +1,3 @@
-.postgres/
 .idea
 build/
 node_modules/
@@ -7,3 +6,4 @@ src/types/
 yarn-error.log
 contracts/
 
+/.postgres/
