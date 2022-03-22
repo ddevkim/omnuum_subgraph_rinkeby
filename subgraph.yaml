@@ -6,55 +6,55 @@ schema:
 dataSources:
 # CA Manager
   - kind: ethereum/contract
-      name: OmnuumCAManager
-      network: rinkeby
-      source:
-        startBlock: 10370768
-        address: "0xa7274669bb2EFbe0DB1B20AcdDE39D80703CA2e2"
-        abi: OmnuumCAManager
-      mapping:
-        file: ./src/mappings/caManager.ts
-        kind: ethereum/events
-        apiVersion: 0.0.5
-        language: wasm/assemblyscript
-        entities:
-          - Transaction
-          - Contract
-        abis:
-          - name: OmnuumCAManager
-            file: ./abis/OmnuumCAManager.json
-        eventHandlers:
-          - event: NftContractRegistered(address,address)
-            handler: handleNftContractRegistered
-          - event: ManagerContractRegistered(address,bytes32)
-            handler: handleManagerContractRegistered
-          - event: ManagerContractRemoved(address,bytes32)
-            handler: handleManagerContractRemoved
+    name: OmnuumCAManager
+    network: rinkeby
+    source:
+      startBlock: 10370768
+      address: "0xa7274669bb2EFbe0DB1B20AcdDE39D80703CA2e2"
+      abi: OmnuumCAManager
+    mapping:
+      file: ./src/mappings/caManager.ts
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Transaction
+        - Contract
+      abis:
+        - name: OmnuumCAManager
+          file: ./abis/OmnuumCAManager.json
+      eventHandlers:
+        - event: NftContractRegistered(address,address)
+          handler: handleNftContractRegistered
+        - event: ManagerContractRegistered(address,bytes32)
+          handler: handleManagerContractRegistered
+        - event: ManagerContractRemoved(address,bytes32)
+          handler: handleManagerContractRemoved
 
 # Mint Manager
   - kind: ethereum/contract
-      name: OmnuumMintManager
-      network: rinkeby
-      source:
-        startBlock: 10370770
-        address: "0x8D4DE26E35C7F36116B8dFC001bb5585A2Ff198D"
-        abi: OmnuumMintManager
-      mapping:
-        file: ./src/mappings/mintManager.ts
-        kind: ethereum/events
-        apiVersion: 0.0.5
-        language: wasm/assemblyscript
-        entities:
-          - Transaction
-          - MintSchedule
-        abis:
-          - name: OmnuumMintManager
-            file: ./abis/OmnuumMintManager.json
-        eventHandlers:
-          - event: SetPublicSchedule(indexed address,indexed uint256,uint256,uint256,uint32,uint32)
-            handler: handleSetPublicSchedule
-          - event: PublicMint(indexed address,indexed address,indexed uint256,uint32,uint32,uint256)
-            handler: handlerPublicMint
+    name: OmnuumMintManager
+    network: rinkeby
+    source:
+      startBlock: 10370770
+      address: "0x8D4DE26E35C7F36116B8dFC001bb5585A2Ff198D"
+      abi: OmnuumMintManager
+    mapping:
+      file: ./src/mappings/mintManager.ts
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Transaction
+        - MintSchedule
+      abis:
+        - name: OmnuumMintManager
+          file: ./abis/OmnuumMintManager.json
+      eventHandlers:
+        - event: SetPublicSchedule(indexed address,indexed uint256,uint256,uint256,uint32,uint32)
+          handler: handleSetPublicSchedule
+        - event: PublicMint(indexed address,indexed address,indexed uint256,uint32,uint32,uint256)
+          handler: handlerPublicMint
 
 # Ticket Manager
   - kind: ethereum/contract
