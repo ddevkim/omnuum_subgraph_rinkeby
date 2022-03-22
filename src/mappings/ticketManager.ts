@@ -1,7 +1,6 @@
-import { log, BigInt } from '@graphprotocol/graph-ts';
 import { Mint, MintSchedule } from '../types/schema';
 import { SetTicketSchedule, TicketMint } from '../types/TicketManager/TicketManager';
-import { saveTransaction, getEventName, EventName, getUniqueIdFromTxLog } from '../utils';
+import { saveTransaction, getEventName, EventName, getUniqueIdFromTxLog, getMintTopic, MintTopic } from '../utils';
 
 export function handleSetTicketSchedule(event: SetTicketSchedule): void {
   const nftContractAddress = event.params.nft.toHexString();
@@ -21,7 +20,7 @@ export function handleSetTicketSchedule(event: SetTicketSchedule): void {
   mintScheduleEntity.nft_contract = nftContractAddress;
   mintScheduleEntity.group_id = mintScheduleGroupId;
   mintScheduleEntity.end_date = event.params.endDate;
-  mintScheduleEntity.topic = 'Ticket';
+  mintScheduleEntity.topic = getMintTopic(MintTopic.TICKET);
 
   mintScheduleEntity.save();
 }

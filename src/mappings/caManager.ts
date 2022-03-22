@@ -14,13 +14,13 @@ import {
   EventName,
   ContractTopic,
   convertContractTopicHashToString,
-  getContractTopicFromString,
+  getContractTopic,
 } from '../utils';
 
 export function handleNftContractRegistered(event: NftContractRegistered): void {
   const nftAddress = event.params.nftContract;
   const id = nftAddress.toHexString();
-  const contractTopic = getContractTopicFromString(ContractTopic.NFT);
+  const contractTopic = getContractTopic(ContractTopic.NFT);
 
   log.info('___LOG handleNftContractRegistered id: {} topic: {}', [id, contractTopic]);
 

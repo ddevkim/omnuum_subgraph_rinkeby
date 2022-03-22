@@ -1,6 +1,6 @@
 import { Mint, MintSchedule } from '../types/schema';
 import { PublicMint, SetPublicSchedule } from '../types/OmnuumMintManager/OmnuumMintManager';
-import { saveTransaction, getEventName, EventName, getUniqueIdFromTxLog } from '../utils';
+import { EventName, getEventName, getMintTopic, getUniqueIdFromTxLog, MintTopic, saveTransaction } from '../utils';
 
 export function handleSetPublicSchedule(event: SetPublicSchedule): void {
   const nftContractAddress = event.params.nft.toHexString();
@@ -18,7 +18,7 @@ export function handleSetPublicSchedule(event: SetPublicSchedule): void {
   mintScheduleEntity.block_number = event.block.number;
   mintScheduleEntity.mint_schedule_transaction = transaction.id;
   mintScheduleEntity.nft_contract = nftContractAddress;
-  mintScheduleEntity.topic = 'Public';
+  mintScheduleEntity.topic = getMintTopic(MintTopic.PUBLIC);
   mintScheduleEntity.group_id = mintScheduleGroupId;
   mintScheduleEntity.end_date = event.params.endDate;
   mintScheduleEntity.base_price = event.params.basePrice;

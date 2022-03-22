@@ -1,8 +1,7 @@
 import { OwnershipTransferred, TransferSingle, Uri } from '../types/templates/OmnuumNFT1155/OmnuumNFT1155';
-import { Contract, MintSchedule, Nft } from '../types/schema';
+import { Contract, Nft } from '../types/schema';
 import { saveTransaction, getEventName, EventName } from '../utils';
-import { log, BigInt, BigDecimal } from '@graphprotocol/graph-ts';
-import { ByteArray, Bytes } from '@graphprotocol/graph-ts/common/collections';
+import { log } from '@graphprotocol/graph-ts';
 
 export function handleTransferSingle(event: TransferSingle): void {
   const nftContractAddress = event.address.toHexString();

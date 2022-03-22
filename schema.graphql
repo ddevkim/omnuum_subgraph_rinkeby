@@ -4,6 +4,12 @@ enum WalletTopic {
   UNRECOGNIZED
 }
 
+enum MintTopic {
+  TICKET
+  PUBLIC
+  UNRECOGNIZED
+}
+
 enum ContractTopic {
   CAMANAGER
   NFT
@@ -41,8 +47,8 @@ type Transaction @entity {
 }
 
 type Request @entity {
-  "MAIN EVENTs FOR WALLET"
-  id: ID!"reqId(hex)"
+  "id: reqId(hex)"
+  id: ID!
   block_number: BigInt!
   request_transaction: Transaction!
   withdrawal_transaction: Transaction
@@ -106,7 +112,7 @@ type MintSchedule @entity {
   block_number: BigInt!
   mint_schedule_transaction: Transaction!
   nft_contract: Contract!
-  topic: String!
+  topic: MintTopic
   group_id: BigInt!
   end_date: BigInt!
   base_price: BigInt
@@ -121,6 +127,7 @@ type Mint @entity {
   mint_transaction: Transaction!
   nft_contract: Contract!
   mint_schedule: MintSchedule!
+  topic: MintTopic
   minter: Bytes!
   mint_quantity: BigInt!
   max_quantity: BigInt

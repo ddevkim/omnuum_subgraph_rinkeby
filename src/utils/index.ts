@@ -124,25 +124,7 @@ export enum ContractTopic {
   REVEAL,
 }
 
-export enum EventName {
-  Requested,
-  Approved,
-  Revoked,
-  Withdrawn,
-  PaymentReceived,
-  EtherReceived,
-  NftContractRegistered,
-  ManagerContractRegistered,
-  ManagerContractRemoved,
-  TransferSingle,
-  Uri,
-  SetTicketSchedule,
-  SetPublicSchedule,
-  TicketMint,
-  PublicMint,
-}
-
-export function getContractTopicFromString(contractTopic: ContractTopic): string {
+export function getContractTopic(contractTopic: ContractTopic): string {
   switch (contractTopic) {
     case ContractTopic.CAMANAGER:
       return 'CAMANAGER';
@@ -165,6 +147,24 @@ export function getContractTopicFromString(contractTopic: ContractTopic): string
     default:
       return 'UNRECOGNIZED';
   }
+}
+
+export enum EventName {
+  Requested,
+  Approved,
+  Revoked,
+  Withdrawn,
+  PaymentReceived,
+  EtherReceived,
+  NftContractRegistered,
+  ManagerContractRegistered,
+  ManagerContractRemoved,
+  TransferSingle,
+  Uri,
+  SetTicketSchedule,
+  SetPublicSchedule,
+  TicketMint,
+  PublicMint,
 }
 
 export function getEventName(eventName: EventName): string {
@@ -200,6 +200,22 @@ export function getEventName(eventName: EventName): string {
     case EventName.PublicMint:
       return 'PublicMint';
     default:
-      return 'undefined';
+      return 'UNRECOGNIZED';
+  }
+}
+
+export enum MintTopic {
+  TICKET,
+  PUBLIC,
+  UNRECOGNIZED,
+}
+export function getMintTopic(mintTopic: MintTopic) {
+  switch (mintTopic) {
+    case MintTopic.TICKET:
+      return 'TICKET';
+    case MintTopic.PUBLIC:
+      return 'PUBLIC';
+    default:
+      return 'UNRECOGNIZED';
   }
 }
