@@ -54,7 +54,9 @@ dataSources:
         - event: SetPublicSchedule(indexed address,indexed uint256,uint256,uint256,uint32,uint32)
           handler: handleSetPublicSchedule
         - event: PublicMint(indexed address,indexed address,indexed uint256,uint32,uint32,uint256)
-          handler: handlerPublicMint
+          handler: handlePublicMint
+        - event: Airdrop(indexed address,indexed address,uint256)
+          handler: handleAirdrop
 
 # Ticket Manager
   - kind: ethereum/contract

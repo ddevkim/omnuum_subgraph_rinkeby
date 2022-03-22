@@ -32,7 +32,7 @@ export function handleSetPublicSchedule(event: SetPublicSchedule): void {
  * Target Entity: [Mint]
  * id: transactionHash(hex)_logIndex(hex)
  * */
-export function handlerPublicMint(event: PublicMint): void {
+export function handlePublicMint(event: PublicMint): void {
   const id = getUniqueIdFromTxLog(event);
 
   let mintEntity = Mint.load(id);
