@@ -11,3 +11,7 @@
 2022-03-19 18:53:49.735 KST [53757] FATAL:  database "jaeminkim" does not exist
 2022-03-19 18:56:16.330 KST [54283] ERROR:  pg_stat_statements must be loaded via shared_preload_libraries
 2022-03-19 18:56:16.330 KST [54283] STATEMENT:  select pg_stat_statements_reset()
+2022-03-22 23:22:28.434 KST [50155] LOG:  received smart shutdown request
+2022-03-22 23:22:28.438 KST [50155] LOG:  background worker "logical replication launcher" (PID 50162) exited with exit code 1
+2022-03-22 23:22:28.438 KST [50157] LOG:  shutting down
+2022-03-22 23:22:28.472 KST [50155] LOG:  database system is shut down
