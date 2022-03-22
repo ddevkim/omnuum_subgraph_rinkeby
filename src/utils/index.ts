@@ -209,7 +209,7 @@ export enum MintTopic {
   PUBLIC,
   UNRECOGNIZED,
 }
-export function getMintTopic(mintTopic: MintTopic) {
+export function getMintTopic(mintTopic: MintTopic): string {
   switch (mintTopic) {
     case MintTopic.TICKET:
       return 'TICKET';
