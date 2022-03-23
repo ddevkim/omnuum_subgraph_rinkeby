@@ -7,7 +7,7 @@ import {
 
 import { Contract } from '../types/schema';
 import { OmnuumNFT1155 as NftTemplate } from '../types/templates';
-import { BeaconProxy as NftContract } from '../types/templates/OmnuumNFT1155/BeaconProxy';
+import { OmnuumNFT1155 as NftContract } from '../types/templates/OmnuumNFT1155/OmnuumNFT1155';
 import {
   getEventName,
   saveTransaction,
@@ -35,44 +35,17 @@ export function handleNftContractRegistered(event: NftContractRegistered): void 
 
   const transaction = saveTransaction(event, getEventName(EventName.NftContractRegistered));
 
-  log.debug('OOOOPS1 {}', [nftAddress.toHexString()]);
-
   const nft = NftContract.bind(nftAddress);
 
-  log.debug('OOOOPS2 {}', [nftAddress.toHexString()]);
   contractEntity.block_number = event.block.number;
   contractEntity.register_transaction = transaction.id;
   contractEntity.owner = event.params.nftOwner;
   contractEntity.topic = contractTopic;
-  // contractEntity.max_supply = maxSupply;
   contractEntity.is_removed = false;
   contractEntity.is_revealed = false;
+  contractEntity.max_supply = nft.maxSupply();
+  contractEntity.cover_url = nft.coverUri();
   contractEntity.save();
-
-  // const nftContract = NftContract.bind(event.params.nftContract);
-  // log.debug('___LOGGER NftContract_binding nftAddress: {}', [event.params.nftContract.toHexString()]);
-  //
-  // const maxSupplyResult = nftContract.try_maxSupply();
-  // if (maxSupplyResult.reverted) {
-  //   log.debug('maxSupply reverted', []);
-  // } else {
-  //   contractEntity.max_supply = maxSupplyResult.value;
-  // }
-  //
-  // const isRevealedResult = nftContract.try_isRevealed();
-  // if (isRevealedResult.reverted) {
-  //   log.debug('is_revealed reverted', []);
-  // } else {
-  //   contractEntity.is_revealed = isRevealedResult.value;
-  // }
-  //
-  // const coverUriResult = nftContract.try_coverUri();
-  // if (coverUriResult.reverted) {
-  //   log.debug('coverUri reverted', []);
-  // } else {
-  //   contractEntity.cover_url = coverUriResult.value;
-  // }
-  // contractEntity.save();
 }
 
 export function handleManagerContractRegistered(event: ManagerContractRegistered): void {

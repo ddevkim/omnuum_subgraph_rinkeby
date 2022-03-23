@@ -24,6 +24,8 @@ dataSources:
       abis:
         - name: OmnuumCAManager
           file: ./abis/OmnuumCAManager.json
+        - name: OmnuumNFT1155
+          file: ./abis/OmnuumNFT1155.json
       eventHandlers:
         - event: NftContractRegistered(address,address)
           handler: handleNftContractRegistered
@@ -161,16 +163,6 @@ templates:
       abis:
         - name: OmnuumNFT1155
           file: ./abis/OmnuumNFT1155.json
-        - name: BeaconProxy
-          file: ./abis/openzeppelin/BeaconProxy.json
-        - name: ERC165Upgradeable
-          file: ./abis/openzeppelin/ERC165Upgradeable.json
-        - name: ERC1155Upgradeable
-          file: ./abis/openzeppelin/ERC1155Upgradeable.json
-        - name: ERC1967Upgrade
-          file: ./abis/openzeppelin/ERC1967Upgrade.json
-        - name: IBeacon
-          file: ./abis/openzeppelin/IBeacon.json
       eventHandlers:
         - event: TransferSingle(indexed address,indexed address,indexed address,uint256,uint256)
           handler: handleTransferSingle
