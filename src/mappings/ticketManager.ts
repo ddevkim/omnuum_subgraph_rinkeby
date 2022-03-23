@@ -21,7 +21,6 @@ export function handleSetTicketSchedule(event: SetTicketSchedule): void {
   mintScheduleEntity.group_id = mintScheduleGroupId;
   mintScheduleEntity.end_date = event.params.endDate;
   mintScheduleEntity.topic = getMintTopic(MintTopic.TICKET);
-
   mintScheduleEntity.save();
 }
 
@@ -44,6 +43,7 @@ export function handlerTicketMint(event: TicketMint): void {
   mintEntity.block_number = event.block.number;
   mintEntity.mint_transaction = transaction.id;
   mintEntity.nft_contract = nftContractAddress;
+  mintEntity.topic = getMintTopic(MintTopic.TICKET);
   mintEntity.mint_schedule = `${nftContractAddress}_${event.params.groupId.toHexString()}`;
   mintEntity.minter = event.params.minter;
   mintEntity.mint_quantity = event.params.quantity;

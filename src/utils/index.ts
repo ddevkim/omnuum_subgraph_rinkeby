@@ -165,6 +165,7 @@ export enum EventName {
   SetPublicSchedule,
   TicketMint,
   PublicMint,
+  Airdrop,
 }
 
 export function getEventName(eventName: EventName): string {
@@ -199,6 +200,8 @@ export function getEventName(eventName: EventName): string {
       return 'TicketMint';
     case EventName.PublicMint:
       return 'PublicMint';
+    case EventName.Airdrop:
+      return 'Airdrop';
     default:
       return 'UNRECOGNIZED';
   }
@@ -207,6 +210,7 @@ export function getEventName(eventName: EventName): string {
 export enum MintTopic {
   TICKET,
   PUBLIC,
+  AIRDROP,
   UNRECOGNIZED,
 }
 export function getMintTopic(mintTopic: MintTopic): string {
@@ -215,6 +219,8 @@ export function getMintTopic(mintTopic: MintTopic): string {
       return 'TICKET';
     case MintTopic.PUBLIC:
       return 'PUBLIC';
+    case MintTopic.AIRDROP:
+      return 'AIRDROP';
     default:
       return 'UNRECOGNIZED';
   }

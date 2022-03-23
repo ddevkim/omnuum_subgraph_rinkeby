@@ -1,0 +1,163 @@
+specVersion: 0.0.2
+description: A protocol for NFT minting
+repository: https://github.com/ddevkim/omnuum_subgraph_rinkeby
+schema:
+  file: ./schema.graphql
+dataSources:
+
+  # CA Manager
+  {{#caManager}}
+  - kind: ethereum/contract
+    name: OmnuumCAManager
+    network: {{network}}
+    source:
+      startBlock: {{startBlock}}
+      address: "{{address}}"
+      abi: OmnuumCAManager
+    mapping:
+      file: ./src/mappings/caManager.ts
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Transaction
+        - Contract
+      abis:
+        - name: OmnuumCAManager
+          file: ./abis/OmnuumCAManager.json
+      eventHandlers:
+        - event: NftContractRegistered(address,address)
+          handler: handleNftContractRegistered
+        - event: ManagerContractRegistered(address,bytes32)
+          handler: handleManagerContractRegistered
+        - event: ManagerContractRemoved(address,bytes32)
+          handler: handleManagerContractRemoved
+  {{/caManager}}
+
+  # Mint Manager
+  {{#mintManager}}
+  - kind: ethereum/contract
+    name: OmnuumMintManager
+    network: {{network}}
+    source:
+      startBlock: {{startBlock}}
+      address: "{{address}}"
+      abi: OmnuumMintManager
+    mapping:
+      file: ./src/mappings/mintManager.ts
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Transaction
+        - MintSchedule
+      abis:
+        - name: OmnuumMintManager
+          file: ./abis/OmnuumMintManager.json
+      eventHandlers:
+        - event: SetPublicSchedule(indexed address,indexed uint256,uint256,uint256,uint32,uint32)
+          handler: handleSetPublicSchedule
+        - event: PublicMint(indexed address,indexed address,indexed uint256,uint32,uint32,uint256)
+          handler: handlePublicMint
+        - event: Airdrop(indexed address,indexed address,uint256)
+          handler: handleAirdrop
+  {{/mintManager}}
+
+  # Ticket Manager
+  {{#ticketManager}}
+  - kind: ethereum/contract
+    name: TicketManager
+    network: {{network}}
+    source:
+      startBlock: {{startBlock}}
+      address: "{{address}}"
+      abi: TicketManager
+    mapping:
+      file: ./src/mappings/ticketManager.ts
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Transaction
+        - MintSchedule
+      abis:
+        - name: TicketManager
+          file: ./abis/TicketManager.json
+      eventHandlers:
+        - event: SetTicketSchedule(indexed address,indexed uint256,uint256)
+          handler: handleSetTicketSchedule
+        - event: TicketMint(indexed address,indexed address,indexed uint256,uint32,uint32,uint256)
+          handler: handlerTicketMint
+  {{/ticketManager}}
+
+  # Wallet
+  {{#wallet}}
+  - kind: ethereum/contract
+    name: OmnuumWallet
+    network: {{network}}
+    source:
+      startBlock: {{startBlock}}
+      address: "{{address}}"
+      abi: OmnuumWallet
+    mapping:
+      file: ./src/mappings/wallet.ts
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Transaction
+        - Request
+        - Approval
+        - Fee
+      abis:
+        - name: OmnuumWallet
+          file: ./abis/OmnuumWallet.json
+      eventHandlers:
+        - event: EtherReceived()
+          handler: handleEtherReceived
+        - event: PaymentReceived(bytes32,string)
+          handler: handlePaymentReceived
+        - event: Requested(indexed uint256,indexed address,uint256)
+          handler: handleRequested
+        - event: Approved(indexed uint256,indexed address)
+          handler: handleApproved
+        - event: Revoked(indexed uint256,indexed address)
+          handler: handleRevoked
+        - event: Withdrawn(indexed uint256,indexed address,uint256)
+          handler: handleWithdrawn
+  {{/wallet}}
+
+templates:
+  - kind: ethereum/contract
+    name: OmnuumNFT1155
+    network: {{network}}
+    source:
+      abi: OmnuumNFT1155
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      file: ./src/mappings/nft1155.ts
+      entities:
+        - Transaction
+        - Mint
+      abis:
+        - name: OmnuumNFT1155
+          file: ./abis/OmnuumNFT1155.json
+        - name: BeaconProxy
+          file: ./abis/openzeppelin/BeaconProxy.json
+        - name: ERC165Upgradeable
+          file: ./abis/openzeppelin/ERC165Upgradeable.json
+        - name: ERC1155Upgradeable
+          file: ./abis/openzeppelin/ERC1155Upgradeable.json
+        - name: ERC1967Upgrade
+          file: ./abis/openzeppelin/ERC1967Upgrade.json
+        - name: IBeacon
+          file: ./abis/openzeppelin/IBeacon.json
+      eventHandlers:
+        - event: TransferSingle(indexed address,indexed address,indexed address,uint256,uint256)
+          handler: handleTransferSingle
+        - event: OwnershipTransferred(indexed address,indexed address)
+          handler: handleOwnershipTransferred
+        - event: Uri(string)
+          handler: handleUri

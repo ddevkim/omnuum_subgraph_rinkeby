@@ -1,0 +1,20 @@
+{
+  "network": "rinkeby",
+  "caManager": {
+    "address": "0x28573066aB772431935A2DFb694aC7E4c0cB31bc",
+    "startBlock": "10371949"
+  },
+  "mintManager": {
+    "address": "0x598a5c8563bF1355A44d3252C62AAAEC3f455bB4",
+    "startBlock": "10371952"
+  },
+  "ticketManager": {
+    "address": "0xC30c130055da9E843E5584Df7CA9F11CB93EaEaa",
+    "startBlock": "10371955"
+  },
+  "wallet": {
+    "address": "0x66B906cA3F04F72ddC280fb7eDdAD4B765Aa568e",
+    "startBlock": "10371959"
+  }
+
+}

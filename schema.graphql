@@ -7,6 +7,7 @@ enum WalletTopic {
 enum MintTopic {
   TICKET
   PUBLIC
+  AIRDROP
   UNRECOGNIZED
 }
 
@@ -126,7 +127,7 @@ type Mint @entity {
   block_number: BigInt!
   mint_transaction: Transaction!
   nft_contract: Contract!
-  mint_schedule: MintSchedule!
+  mint_schedule: MintSchedule
   topic: MintTopic
   minter: Bytes!
   mint_quantity: BigInt!

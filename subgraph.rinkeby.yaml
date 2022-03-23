@@ -4,13 +4,14 @@ repository: https://github.com/ddevkim/omnuum_subgraph_rinkeby
 schema:
   file: ./schema.graphql
 dataSources:
-# CA Manager
+
+  # CA Manager
   - kind: ethereum/contract
     name: OmnuumCAManager
     network: rinkeby
     source:
-      startBlock: 10370768
-      address: "0xa7274669bb2EFbe0DB1B20AcdDE39D80703CA2e2"
+      startBlock: 10371949
+      address: "0x28573066aB772431935A2DFb694aC7E4c0cB31bc"
       abi: OmnuumCAManager
     mapping:
       file: ./src/mappings/caManager.ts
@@ -31,13 +32,13 @@ dataSources:
         - event: ManagerContractRemoved(address,bytes32)
           handler: handleManagerContractRemoved
 
-# Mint Manager
+  # Mint Manager
   - kind: ethereum/contract
     name: OmnuumMintManager
     network: rinkeby
     source:
-      startBlock: 10370770
-      address: "0x8D4DE26E35C7F36116B8dFC001bb5585A2Ff198D"
+      startBlock: 10371952
+      address: "0x598a5c8563bF1355A44d3252C62AAAEC3f455bB4"
       abi: OmnuumMintManager
     mapping:
       file: ./src/mappings/mintManager.ts
@@ -58,14 +59,13 @@ dataSources:
         - event: Airdrop(indexed address,indexed address,uint256)
           handler: handleAirdrop
 
-# Ticket Manager
+  # Ticket Manager
   - kind: ethereum/contract
     name: TicketManager
     network: rinkeby
     source:
-      startBlock: 10370773
-      # ticket manager
-      address: "0x2d28E3b925fc23bC8FcDe8549F59e44357533D4f"
+      startBlock: 10371955
+      address: "0xC30c130055da9E843E5584Df7CA9F11CB93EaEaa"
       abi: TicketManager
     mapping:
       file: ./src/mappings/ticketManager.ts
@@ -84,14 +84,13 @@ dataSources:
         - event: TicketMint(indexed address,indexed address,indexed uint256,uint32,uint32,uint256)
           handler: handlerTicketMint
 
-# Wallet
+  # Wallet
   - kind: ethereum/contract
     name: OmnuumWallet
     network: rinkeby
     source:
-      startBlock: 10370777
-      # wallet
-      address: "0x935e46E2DE77cF6d218F7EC1BCfe18e09EBCE6C5"
+      startBlock: 10371959
+      address: "0x66B906cA3F04F72ddC280fb7eDdAD4B765Aa568e"
       abi: OmnuumWallet
     mapping:
       file: ./src/mappings/wallet.ts
