@@ -24,6 +24,11 @@ enum ContractTopic {
   UNRECOGNIZED
 }
 
+enum VrfTopic {
+  REVEAL_PFP
+  UNRECOGNIZED
+}
+
 
 type Transaction @entity {
   "id: transactionHash(hex)"
@@ -45,6 +50,8 @@ type Transaction @entity {
   nfts: [Nft!] @derivedFrom(field: "nft_transaction")
   mintSchedules: [MintSchedule!] @derivedFrom(field: "mint_schedule_transaction")
   mints: [Mint!] @derivedFrom(field: "mint_transaction")
+  reveal_random_requests: [Reveal!] @derivedFrom(field: "reveal_random_request_transaction")
+  reveal_random_responses: [Reveal!] @derivedFrom(field: "reveal_random_response_transaction")
 }
 
 type Request @entity {
@@ -133,4 +140,15 @@ type Mint @entity {
   mint_quantity: BigInt!
   max_quantity: BigInt
   price: BigInt
+}
+
+type Reveal @entity {
+  "id: requestId(hex)"
+  id: ID!
+  block_number: BigInt!
+  nft_contract: Contract!
+  reveal_random_request_transaction: Transaction
+  reveal_random_response_transaction: Transaction
+  topic: VrfTopic
+  random_number: BigInt
 }

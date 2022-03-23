@@ -4,18 +4,19 @@
   "license": "GPL-3.0-or-later",
   "repository": "https://github.com/graphprotocol/om_wallet",
   "scripts": {
-    "codegen": "graph codegen --output-dir src/types/",
-    "build": "graph codegen --output-dir src/types/ && graph build",
+    "codegen": "npm run prepare:rinkeby_test && graph codegen --output-dir src/types/ subgraph.rinkeby.yaml",
+    "build": "npm run codegen && graph build subgraph.rinkeby.yaml",
 
     "prepare:rinkeby": "target=${target:-rinkeby}; mustache config/$target.json subgraph.template.yaml > subgraph.rinkeby.yaml",
+    "prepare:rinkeby_test": "mustache config/rinkeby_test.json subgraph.template.yaml > subgraph.rinkeby.yaml",
 
     "demo": "echo hello $npm_config_target",
 
-    "deploy:testnet:v1": "graph codegen --output-dir src/types/ && graph build && graph deploy --studio om_rinkeby_test_v1",
-    "deploy:testnet:v2": "graph codegen --output-dir src/types/ && graph build && graph deploy --studio om_rinkeby_test_v2",
-    "deploy:testnet:v3": "graph codegen --output-dir src/types/ && graph build && graph deploy --studio om_rinkeby_test_v3",
+    "deploy:testnet:v1": "npm run build && graph deploy --studio om_rinkeby_test_v1 subgraph.rinkeby.yaml",
+    "deploy:testnet:v2": "npm run build && graph deploy --studio om_rinkeby_test_v2 subgraph.rinkeby.yaml",
+    "deploy:testnet:v3": "npm run build && graph deploy --studio om_rinkeby_test_v3 subgraph.rinkeby.yaml",
 
-    "deploy:hosting:rinkeby": "graph codegen --output-dir src/types/ subgraph.rinkeby.yaml && graph build subgraph.rinkeby.yaml && graph deploy --product hosted-service ddevkim/omnuum-rinkeby subgraph.rinkeby.yaml ",
+    "deploy:hosting:rinkeby": "npm run build && graph deploy --product hosted-service ddevkim/omnuum-rinkeby subgraph.rinkeby.yaml ",
     "deploy:hosting:pjp": "graph codegen --output-dir src/types/ subgraph.rinkeby.yaml && graph build subgraph.rinkeby.yaml && graph deploy --product hosted-service ddevkim/om-rinkeby-pjp subgraph.rinkeby.yaml",
 
     "create-local": "graph create --node http://localhost:8020/ om_wallet",

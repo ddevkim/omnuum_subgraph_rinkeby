@@ -10,8 +10,8 @@ dataSources:
     name: OmnuumCAManager
     network: rinkeby
     source:
-      startBlock: 10371949
-      address: "0x28573066aB772431935A2DFb694aC7E4c0cB31bc"
+      startBlock: 10377338
+      address: "0x013A309a94942c9b84542B3123d0bd96dA951B38"
       abi: OmnuumCAManager
     mapping:
       file: ./src/mappings/caManager.ts
@@ -37,8 +37,8 @@ dataSources:
     name: OmnuumMintManager
     network: rinkeby
     source:
-      startBlock: 10371952
-      address: "0x598a5c8563bF1355A44d3252C62AAAEC3f455bB4"
+      startBlock: 10377341
+      address: "0xC6b3e7EF1cFa940576378dee1230C7c2BC944059"
       abi: OmnuumMintManager
     mapping:
       file: ./src/mappings/mintManager.ts
@@ -64,8 +64,8 @@ dataSources:
     name: TicketManager
     network: rinkeby
     source:
-      startBlock: 10371955
-      address: "0xC30c130055da9E843E5584Df7CA9F11CB93EaEaa"
+      startBlock: 10377344
+      address: "0x292E7628C668d64C2309ef1b459FD57897E6ec7e"
       abi: TicketManager
     mapping:
       file: ./src/mappings/ticketManager.ts
@@ -84,13 +84,38 @@ dataSources:
         - event: TicketMint(indexed address,indexed address,indexed uint256,uint32,uint32,uint256)
           handler: handlerTicketMint
 
+  # VRF Manager
+  - kind: ethereum/contract
+    name: OmnuumVRFManager
+    network: rinkeby
+    source:
+      startBlock: 10377347
+      address: "0xFc596D1E8070f56683F5fA18289FA99341a6fC0a"
+      abi: OmnuumVRFManager
+    mapping:
+      file: ./src/mappings/vrfManager.ts
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Transaction
+        - Reveal
+      abis:
+        - name: OmnuumVRFManager
+          file: ./abis/OmnuumVRFManager.json
+      eventHandlers:
+        - event: RequestVRF(indexed address,indexed bytes32,indexed bytes32)
+          handler: handleRequestVRF
+        - event: ResponseVRF(indexed bytes32,uint256,indexed bytes32,bool,string)
+          handler: handleResponseVRF
+
   # Wallet
   - kind: ethereum/contract
     name: OmnuumWallet
     network: rinkeby
     source:
-      startBlock: 10371959
-      address: "0x66B906cA3F04F72ddC280fb7eDdAD4B765Aa568e"
+      startBlock: 10377348
+      address: "0xccC18d10E06F27d2aD2D50CE1b1ca329C7262C40"
       abi: OmnuumWallet
     mapping:
       file: ./src/mappings/wallet.ts

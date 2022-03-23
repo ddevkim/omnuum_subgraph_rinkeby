@@ -79,33 +79,32 @@ export function convertFeeTopicHashToString(topicHashStr: string): string {
   }
 }
 
+export function convertVrfTopicHashToString(topicHashStr: string): string {
+  if (crypto.keccak256(ByteArray.fromUTF8('REVEAL_PFP')).toHexString() == topicHashStr) {
+    return 'REVEAL_PFP';
+  } else {
+    return 'UNRECOGNIZED';
+  }
+}
+
 export function convertContractTopicHashToString(topicHashStr: string): string {
   if (crypto.keccak256(ByteArray.fromUTF8('NFT')).toHexString() == topicHashStr) {
-    log.debug('KECCAK___RESULT NFT {}', [crypto.keccak256(ByteArray.fromUTF8('NFT')).toHexString()]);
     return 'NFT';
   } else if (crypto.keccak256(ByteArray.fromUTF8('CAMANAGER')).toHexString() == topicHashStr) {
-    log.debug('KECCAK___RESULT VERIFIER {}', [crypto.keccak256(ByteArray.fromUTF8('CAMANAGER')).toHexString()]);
     return 'CAMANAGER';
   } else if (crypto.keccak256(ByteArray.fromUTF8('VERIFIER')).toHexString() == topicHashStr) {
-    log.debug('KECCAK___RESULT VERIFIER {}', [crypto.keccak256(ByteArray.fromUTF8('VERIFIER')).toHexString()]);
     return 'VERIFIER';
   } else if (crypto.keccak256(ByteArray.fromUTF8('VRF')).toHexString() == topicHashStr) {
-    log.debug('KECCAK___RESULT TICKET {}', [crypto.keccak256(ByteArray.fromUTF8('VRF')).toHexString()]);
     return 'VRF';
   } else if (crypto.keccak256(ByteArray.fromUTF8('TICKET')).toHexString() == topicHashStr) {
-    log.debug('KECCAK___RESULT TICKET {}', [crypto.keccak256(ByteArray.fromUTF8('TICKET')).toHexString()]);
     return 'TICKET';
   } else if (crypto.keccak256(ByteArray.fromUTF8('MINTMANAGER')).toHexString() == topicHashStr) {
-    log.debug('KECCAK___RESULT MINTMANAGER {}', [crypto.keccak256(ByteArray.fromUTF8('MINTMANAGER')).toHexString()]);
     return 'MINTMANAGER';
   } else if (crypto.keccak256(ByteArray.fromUTF8('EXCHANGE')).toHexString() == topicHashStr) {
-    log.debug('KECCAK___RESULT EXCHANGE {}', [crypto.keccak256(ByteArray.fromUTF8('EXCHANGE')).toHexString()]);
     return 'EXCHANGE';
   } else if (crypto.keccak256(ByteArray.fromUTF8('WALLET')).toHexString() == topicHashStr) {
-    log.debug('KECCAK___RESULT WALLET {}', [crypto.keccak256(ByteArray.fromUTF8('WALLET')).toHexString()]);
     return 'WALLET';
   } else if (crypto.keccak256(ByteArray.fromUTF8('REVEAL')).toHexString() == topicHashStr) {
-    log.debug('KECCAK___RESULT REVEAL {}', [crypto.keccak256(ByteArray.fromUTF8('REVEAL')).toHexString()]);
     return 'REVEAL';
   } else {
     return 'UNRECOGNIZED';
@@ -166,6 +165,8 @@ export enum EventName {
   TicketMint,
   PublicMint,
   Airdrop,
+  RequestVRF,
+  ResponseVRF,
 }
 
 export function getEventName(eventName: EventName): string {
@@ -202,6 +203,10 @@ export function getEventName(eventName: EventName): string {
       return 'PublicMint';
     case EventName.Airdrop:
       return 'Airdrop';
+    case EventName.RequestVRF:
+      return 'RequestVRF';
+    case EventName.ResponseVRF:
+      return 'ResponseVRF';
     default:
       return 'UNRECOGNIZED';
   }

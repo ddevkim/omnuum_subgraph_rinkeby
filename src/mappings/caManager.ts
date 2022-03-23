@@ -1,4 +1,4 @@
-import { log } from '@graphprotocol/graph-ts';
+import { log, BigInt } from '@graphprotocol/graph-ts';
 import {
   ManagerContractRegistered,
   ManagerContractRemoved,
@@ -7,7 +7,7 @@ import {
 
 import { Contract } from '../types/schema';
 import { OmnuumNFT1155 as NftTemplate } from '../types/templates';
-import { OmnuumNFT1155 as NftContract } from '../types/templates/OmnuumNFT1155/OmnuumNFT1155';
+import { BeaconProxy as NftContract } from '../types/templates/OmnuumNFT1155/BeaconProxy';
 import {
   getEventName,
   saveTransaction,
@@ -35,11 +35,18 @@ export function handleNftContractRegistered(event: NftContractRegistered): void 
 
   const transaction = saveTransaction(event, getEventName(EventName.NftContractRegistered));
 
+  log.debug('OOOOPS1 {}', [nftAddress.toHexString()]);
+
+  const nft = NftContract.bind(nftAddress);
+
+  log.debug('OOOOPS2 {}', [nftAddress.toHexString()]);
   contractEntity.block_number = event.block.number;
   contractEntity.register_transaction = transaction.id;
   contractEntity.owner = event.params.nftOwner;
   contractEntity.topic = contractTopic;
+  // contractEntity.max_supply = maxSupply;
   contractEntity.is_removed = false;
+  contractEntity.is_revealed = false;
   contractEntity.save();
 
   // const nftContract = NftContract.bind(event.params.nftContract);
