@@ -54,7 +54,7 @@ export function handleTransferSingle(event: TransferSingle): void {
 export function handleUri(event: Uri): void {
   const contractEntity = Contract.load(event.address.toHexString());
 
-  saveTransaction(event, getEventName(EventName.Uri));
+  const transaction = saveTransaction(event, getEventName(EventName.Uri));
 
   if (contractEntity) {
     contractEntity.block_number = event.block.number;

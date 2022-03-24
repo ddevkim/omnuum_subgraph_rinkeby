@@ -1,8 +1,14 @@
 import { BigInt, log } from '@graphprotocol/graph-ts';
 import { Approved, PaymentReceived, Requested, Revoked, Withdrawn } from '../types/OmnuumWallet/OmnuumWallet';
-import { Approval, Fee, Request } from '../types/schema';
+import { Approval, Payment, Request } from '../types/schema';
 
-import { getEventName, saveTransaction, EventName, convertFeeTopicHashToString, getUniqueIdFromTxLog } from '../utils';
+import {
+  getEventName,
+  saveTransaction,
+  EventName,
+  convertPaymentTopicHashToString,
+  getUniqueIdFromTxLog,
+} from '../utils';
 
 /*
     @ Table: Request
@@ -135,18 +141,18 @@ export function handlePaymentReceived(event: PaymentReceived): void {
 
   log.info('___LOG handlePaymentReceived tx_id: {} sender: {}', [id, sender.toHexString()]);
 
-  let feeEntity = Fee.load(id);
-  if (!feeEntity) {
-    feeEntity = new Fee(id);
+  let paymentEntity = Payment.load(id);
+  if (!paymentEntity) {
+    paymentEntity = new Payment(id);
   }
 
-  feeEntity.block_number = event.block.number;
-  feeEntity.fee_transaction = transaction.id;
-  feeEntity.sender = sender;
-  feeEntity.value = event.transaction.value;
+  paymentEntity.block_number = event.block.number;
+  paymentEntity.payment_transaction = transaction.id;
+  paymentEntity.sender = sender;
+  paymentEntity.value = event.transaction.value;
 
-  feeEntity.topic = convertFeeTopicHashToString(event.params.topic.toHexString());
-  feeEntity.description = event.params.description;
+  paymentEntity.topic = convertPaymentTopicHashToString(event.params.topic.toHexString());
+  paymentEntity.description = event.params.description;
 
-  feeEntity.save();
+  paymentEntity.save();
 }

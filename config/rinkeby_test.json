@@ -1,8 +1,8 @@
 {
   "network": "rinkeby",
-  "caManager": { "address": "0x013A309a94942c9b84542B3123d0bd96dA951B38", "startBlock": "10377338" },
-  "mintManager": { "address": "0xC6b3e7EF1cFa940576378dee1230C7c2BC944059", "startBlock": "10377341" },
-  "ticketManager": { "address": "0x292E7628C668d64C2309ef1b459FD57897E6ec7e", "startBlock": "10377344" },
-  "vrfManager": { "address": "0xFc596D1E8070f56683F5fA18289FA99341a6fC0a", "startBlock": "10377347" },
-  "wallet": { "address": "0xccC18d10E06F27d2aD2D50CE1b1ca329C7262C40", "startBlock": "10377348" }
+  "caManager": { "address": "0x83d17776D8dA5CD02FAD91cbF41E0A996d0801D2", "startBlock": "10379876" },
+  "mintManager": { "address": "0x106099083B1Ee20e017671EEd36e4050Eb2a8aB2", "startBlock": "10379878" },
+  "ticketManager": { "address": "0x0A8799c5172EE94556D3A3e45E17B78ec6089BaF", "startBlock": "10379882" },
+  "vrfManager": { "address": "0x805143592eA3EAc8f87834832310667f0336aA1B", "startBlock": "10379885" },
+  "wallet": { "address": "0x0e334CBf94cc458495ddd3f0fCF3519A72B9b18c", "startBlock": "10379886" }
 }

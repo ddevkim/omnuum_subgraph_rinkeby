@@ -69,11 +69,13 @@ export function getUniqueIdFromTxLog(event: ethereum.Event): string {
   return `${trxHash}_${logIndex}`;
 }
 
-export function convertFeeTopicHashToString(topicHashStr: string): string {
+export function convertPaymentTopicHashToString(topicHashStr: string): string {
   if (crypto.keccak256(ByteArray.fromUTF8('DEPLOY_FEE')).toHexString() == topicHashStr) {
     return 'DEPLOY_FEE';
   } else if (crypto.keccak256(ByteArray.fromUTF8('MINT_FEE')).toHexString() == topicHashStr) {
     return 'MINT_FEE';
+  } else if (crypto.keccak256(ByteArray.fromUTF8('HOSTING_FEE')).toHexString() == topicHashStr) {
+    return 'HOSTING_FEE';
   } else {
     return 'UNRECOGNIZED';
   }

@@ -20,7 +20,7 @@ export function handleRequestVRF(event: RequestVRF): void {
 
     revealEntity.block_number = event.block.number;
     revealEntity.nft_contract = event.params.roller.toHexString();
-    revealEntity.reveal_random_request_transaction = transaction.id;
+    revealEntity.random_request_transaction = transaction.id;
     revealEntity.topic = topicString;
     revealEntity.save();
   }
@@ -39,7 +39,7 @@ export function handleResponseVRF(event: ResponseVRF): void {
     if (revealEntity) {
       const transaction = saveTransaction(event, getEventName(EventName.ResponseVRF));
       revealEntity.block_number = event.block.number;
-      revealEntity.reveal_random_response_transaction = transaction.id;
+      revealEntity.random_response_transaction = transaction.id;
       revealEntity.random_number = event.params.randomness;
       revealEntity.save();
     } else {

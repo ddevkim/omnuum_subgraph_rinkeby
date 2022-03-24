@@ -1,4 +1,4 @@
-enum WalletTopic {
+enum PaymentTopic {
   DEPLOY_FEE
   MINT_FEE
   UNRECOGNIZED
@@ -45,13 +45,14 @@ type Transaction @entity {
   "Derived Values"
   requests: [Request!] @derivedFrom(field: "request_transaction")
   approvals: [Approval!] @derivedFrom(field: "approval_transactions")
-  fees: [Fee!] @derivedFrom(field: "fee_transaction")
-  contracts: [Contract!] @derivedFrom(field: "register_transaction")
-  nfts: [Nft!] @derivedFrom(field: "nft_transaction")
+  payments: [Payment!] @derivedFrom(field: "payment_transaction")
+  contract_registers: [Contract!] @derivedFrom(field: "register_transaction")
+  contract_reveals: [Contract!] @derivedFrom(field: "set_uri_transaction")
   mintSchedules: [MintSchedule!] @derivedFrom(field: "mint_schedule_transaction")
   mints: [Mint!] @derivedFrom(field: "mint_transaction")
-  reveal_random_requests: [Reveal!] @derivedFrom(field: "reveal_random_request_transaction")
-  reveal_random_responses: [Reveal!] @derivedFrom(field: "reveal_random_response_transaction")
+  nfts: [Nft!] @derivedFrom(field: "nft_transaction")
+  reveal_random_requests: [Reveal!] @derivedFrom(field: "random_request_transaction")
+  reveal_random_responses: [Reveal!] @derivedFrom(field: "random_response_transaction")
 }
 
 type Request @entity {
@@ -78,14 +79,14 @@ type Approval @entity {
 }
 
 # id : transactionHash
-type Fee @entity {
+type Payment @entity {
   "id: transactionHash(hex)_logIndex(hex)"
   id: ID!
   block_number: BigInt!
-  fee_transaction: Transaction!
+  payment_transaction: Transaction!
   sender: Bytes! #msg.sender
   value: BigInt! #msg.value
-  topic: WalletTopic
+  topic: PaymentTopic
   description: String
 }
 
@@ -95,6 +96,7 @@ type Contract @entity {
   block_number: BigInt!
   register_transaction: Transaction!
   remove_transaction: Transaction
+  set_uri_transaction: Transaction
   owner: Bytes!
   topic: ContractTopic!
   is_removed: Boolean!
@@ -147,8 +149,8 @@ type Reveal @entity {
   id: ID!
   block_number: BigInt!
   nft_contract: Contract!
-  reveal_random_request_transaction: Transaction
-  reveal_random_response_transaction: Transaction
+  random_request_transaction: Transaction
+  random_response_transaction: Transaction
   topic: VrfTopic
   random_number: BigInt
 }
